@@ -1,0 +1,21 @@
+# Synchron
+
+- [Cloud Computing und Virtualisierung](https://jhumci.github.io/2023_WiSe_IoT2/IoT_7_Cloud/#)
+- [Security und Safety](https://jhumci.github.io/2023_WiSe_IoT2/IoT_6_SecuritySafety/)
+
+## Vorstellung der Aufgabenstellung
+
+- [ ] Sie bereiten eine kontainersierte Lösung vor, die sowohl eine Datenbank (z.B. InfluxDB, SQLite, Arrow etc.) als auch eine Visualisierungskomponente (z.B. Grafana, etc.) beinhaltet. Bei der Auswahl der Technologien sind Sie frei, achten Sie jedoch darauf, dass die Lösung ressourcenschonend ist und auf einem typischen Laptop ausgeführt werden kann.
+- [ ] Die Lösung soll so gestaltet sein, dass sie mit minimalen Aufwand gestartet werden kann (z.B. über ein `docker-compose.yml` Datei).
+- [ ] Die Lösung soll die Daten aller verbundenen Sensoren speichern und auch offen für zukünftige Sensoren sein, die dem gleichen JSON-Format folgen.
+- Neben der Visualisierung der Zeitreihen-Daten, soll die Lösung auch eine übersicht über die verbundenen Sensoren bieten (z.B. Anzahl der Sensoren, letzte Verbindung, etc.).
+- [ ] Bearbeiten sie die Dokumentation so auf, dass ein Nutzer die Anpassung der Config den Mikrocontroller in ein bestehendes WLAN einbinden kann und die kontainersierte Lösung starten und nutzen kann.
+
+# Assynchrone Inhalte
+
+
+- Mit folgenden Inhalten sollten Sie sich vertraut machen, um die Aufgabenstellung erfolgreich zu bearbeiten:
+
+- [Filius-Aufgaben](https://jhumci.github.io/2024_SoSe_IoT1/IoT_5_Netzwerke_Aufgaben/): Ein Netzwerk-Simulator, der es ermöglicht, Netzwerktopologien zu erstellen und zu testen. Nutzen Sie das Skript und bearbeiten Sie die Aufgaben 1-12, 21, 22 im Skriptum, um sich mit den Grundlagen von Netzwerken vertraut zu machen.
+- Machen Sie sich mit der [OpenAPI Specification](https://de.wikipedia.org/wiki/OpenAPI)
+- [ELT-Prozess mit Telegraf, influxDB und Grafana](https://github.com/jhumci/docker_iot): Ein Beispielprojekt, das zeigt, wie Sensordaten von einem MQTT-Broker erfasst, in einer InfluxDB-Datenbank gespeichert und mit Grafana visualisiert werden können. Nutzen Sie dieses Projekt als Ausgangspunkt für Ihre eigene Lösung.

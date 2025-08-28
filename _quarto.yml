@@ -14,38 +14,14 @@ book:
       orcid: 0000-0002-0678-6855
       affiliation: "MCI | The Entrepreneurial School"
   license: "CC BY-NC-SA"
-  site-url: https://github.com/jhumci/
-  repo-url: https://github.com/jhumci/
+  site-url: https://github.com/jhumci/MECH-M-3-IIoT
+  repo-url: https://github.com/jhumci/MECH-M-3-IIoT
   repo-branch: main
   repo-actions: [edit, issue]
   chapters:
-    - index.qmd
-    - intro.qmd
-    - part: microcontroller/motivation.qmd
-      chapters:
-        - microcontroller/task.qmd
-        - microcontroller/reading.qmd
-    - part: mqtt/motivation.qmd
-      chapters:
-        - mqtt/task.qmd
-        - mqtt/reading.qmd
-    - part: networking/motivation.qmd
-      chapters:
-        - networking/task.qmd
-        - networking/reading.qmd
-    - part: rest/motivation.qmd
-      chapters:
-        - rest/task.qmd
-        - rest/reading.qmd
-    - part: cloud/motivation.qmd
-      chapters:
-        - cloud/task.qmd
-        - cloud/reading.qmd
-    - part: cicd/motivation.qmd
-      chapters:
-        - cicd/task.qmd
-        - cicd/reading.qmd
-bibliography: references.bib
+    - docs/index.qmd
+    - part: docs/Termin_1_Grundkonzepte_IoT.qmd
+bibliography: docs/references.bib
 
 format:
   html:

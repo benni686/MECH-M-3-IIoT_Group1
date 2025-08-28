@@ -1,0 +1,22 @@
+# Synchron
+
+- [Netzwerke](https://jhumci.github.io/2024_SoSe_IoT1/IoT_5_Netzwerke/)
+- [Kommunikations-Architekturen (REST)](https://jhumci.github.io/2024_SoSe_IoT1/IoT_4_Architekturen/)
+
+## Vorstellung der Aufgabenstellung
+
+- [ ] Die Netzwerkkonfiguration (z.B. WLAN-Zugangsdaten) wird über eine `config.json` Datei bereitgestellt, die der Microcontroller beim Start einliest.
+- [ ] Der Microcontroller hat zwei REST-Endpunkte (unverschlüsselt, HTTP):
+  - `/config` (GET, POST): Zum Abrufen und Setzen der Konfiguration (z.B. Sendeintervall).
+  - `/status` (GET): Zum Abrufen des aktuellen Status des Geräts (z.B. letzte gesendeten Werte, Verbindungsstatus, Uptime).
+- Einigen sie sich in der Gesamtgruppe auf die REST-API, welche alle Sensoren unterstützen müssen und legen Sie alles fest **bis vor dem 3. Synchron-Termin**.
+- Die Schnittstellen sind in der OpenAPI Specification dokumentiert.
+- Es stehen Testfälle zur Verfügung, um die Funktionalität der REST-API zu überprüfen. Ob Sie diese Testfälle mittels eines Test-Frameworks hat Auswirkung auf die Bewertung: (z.B. [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) in VSCode (*befriedigend*)), `unittest` in Python (*gut*),oder das OpenAPI-Tooling (z.B. [Swagger Codegen](https://swagger.io/tools/swagger-codegen/)) nutzen (*sehr gut*), bleibt Ihnen überlassen. Wie die Testfälle genutzt werden, sollte in der Dokumentation beschrieben sein.
+
+# Assynchrone Inhalte
+
+
+- Mit folgenden Inhalten sollten Sie sich vertraut machen, um die Aufgabenstellung erfolgreich zu bearbeiten:
+
+- [Filius-Aufgaben](https://jhumci.github.io/2024_SoSe_IoT1/IoT_5_Netzwerke_Aufgaben/): Ein Netzwerk-Simulator, der es ermöglicht, Netzwerktopologien zu erstellen und zu testen. Nutzen Sie das Skript und bearbeiten Sie die Aufgaben 1-12, 21, 22 im Skriptum, um sich mit den Grundlagen von Netzwerken vertraut zu machen.
+- Machen Sie sich mit der [OpenAPI Specification](https://de.wikipedia.org/wiki/OpenAPI)
