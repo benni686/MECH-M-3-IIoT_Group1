@@ -1,0 +1,67 @@
+asyncapi: 2.6.0
+info:
+  title: Building IoT Sensors
+  version: '1.0.0'
+  description: |
+    AsyncAPI-Spezifikation für Gebäudesensoren.
+    Dieses Beispiel zeigt einen Temperatur-Sensor in einem Raum.
+
+servers:
+  mqttBroker:
+    url: mqtt://broker.example.com
+    protocol: mqtt
+
+channels:
+  building/{buildingId}/room/{roomId}/sensor/temperature/state:
+    description: |
+      Publiziert Temperaturmessungen aus einem Raum in einem Gebäude.
+    parameters:
+      buildingId:
+        description: Eindeutige Kennung des Gebäudes
+        schema:
+          type: string
+      roomId:
+        description: Eindeutige Kennung des Raumes
+        schema:
+          type: string
+    publish:
+      operationId: publishTemperature
+      summary: Sendet Temperaturdaten
+      message:
+        name: TemperatureMessage
+        title: Temperatur-Daten
+        payload:
+          $ref: '#/components/schemas/TemperatureReading'
+
+components:
+  schemas:
+    TemperatureReading:
+      type: object
+      required:
+        - timestamp
+        - value
+        - unit
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: Zeitpunkt der Messung (ISO8601)
+          example: "2025-08-28T10:00:00Z"
+        sensor_id:
+          type: string
+          description: Eindeutige ID des Sensors
+          example: "temp-101"
+        value:
+          type: number
+          description: Gemessene Temperatur
+          example: 22.5
+        unit:
+          type: string
+          description: Einheit der Messung
+          enum: [°C, K]
+          example: "°C"
+        status:
+          type: string
+          description: Status der Messung
+          enum: [ok, error, offline]
+          example: "ok"

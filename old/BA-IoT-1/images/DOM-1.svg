@@ -1,0 +1,108 @@
+<svg width="1000"  height="714" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+     viewBox="0 0 700 500" >
+  <title>DOM - Elementenbaum einer Webseite</title>	 
+  <defs>
+    <style type="text/css">
+	  text {text-anchor: middle; font-size: 16px;}
+	  path {stroke-width: 3; stroke: black;}
+	  rect {stroke-width: 1; stroke: black;}
+	</style>
+	<symbol id="knoten">
+	  <rect x="1" y="1" rx="5" ry="5" width="100" height="30" />
+	</symbol>
+    <symbol id="elementknoten">
+	  <rect x="26" y="1" rx="5" ry="5" width="50" height="30" />
+	</symbol>
+	<symbol id="line">
+	  <path d="M0,0 l65,32"/>
+	</symbol>  
+	<symbol id="link">
+	  <rect x="1" y="1" rx="5" ry="5" width="50" height="30" fill="#dfac20"/>
+	  <text transform="translate(25,20)">a</text>
+	  <path d="M51,15 h25"/>
+	  <rect x="75" y="1" rx="5" ry="5" width="50" height="30" fill="#3983ab" />
+	  <text transform="translate(100,20)">href</text>
+	  <path d="M25,31 v30"/>
+	  <rect x="1" y="61" rx="5" ry="5" width="100" height="30" fill="#c32e04"/>
+	 </symbol>   
+  </defs>
+  
+  <use xlink:href="#knoten" transform="translate(200,20)" fill="#fffbf0 "/>
+  <text transform="translate(250,40)">document</text>
+  <path d="M250,51 v29"/>
+  <use xlink:href="#line" x="0" y="0" transform="translate(250,110) scale(2.1,1)"/>
+  <use xlink:href="#line" x="0" y="0" transform="translate(250,110) scale(-2.1,1) "/>
+  <use xlink:href="#elementknoten" transform="translate(200,80)" fill="#dfac20"/>
+  <text transform="translate(250,100)">html</text>
+
+  <use xlink:href="#line" x="0" y="0" transform="translate(100,170) scale(-1.1,1) "/>   
+  <use xlink:href="#elementknoten" transform="translate(50,140)" fill="#dfac20"/>
+  <text transform="translate(100,160)">head</text>
+
+
+  <use xlink:href="#elementknoten" transform="translate(-20,200)" fill="#dfac20"/>
+  <text transform="translate(30,220)">title</text>  
+  <path d="M25,230 v30"/> 
+  <use xlink:href="#knoten" transform="translate(5,250)" fill="#c32e04"/>
+  <text fill="#fff" transform="translate(55,270)">Seitenname</text>  
+
+
+  <use xlink:href="#line" x="0" y="0" transform="translate(100,170) scale(1.1,1) "/>
+  <use xlink:href="#elementknoten" transform="translate(115,200)" fill="#dfac20"/>
+  <text transform="translate(165,220)">meta</text> 
+  
+  <use xlink:href="#elementknoten" transform="translate(350,140)" fill="#dfac20"/>
+  <text transform="translate(400,160)">body</text>
+  
+  <use xlink:href="#line" x="0" y="0" transform="translate(400,170) scale(2.1,1)"/>
+  <use xlink:href="#line" x="0" y="0" transform="translate(400,170) scale(-1.5,1) "/>
+  
+  <use xlink:href="#elementknoten" transform="translate(250,200)" fill="#dfac20"/>
+  <text transform="translate(300,220)">nav</text>
+  <use xlink:href="#line" x="0" y="0" transform="translate(300,230) scale(-1.5,1)"/>  
+  <use xlink:href="#elementknoten" transform="translate(130,260)" fill="#dfac20"/>
+  <text transform="translate(180,280)">ul</text>
+  
+  <use xlink:href="#line" x="0" y="0" transform="translate(180,290) scale(-1.2,1)"/>  
+  <use xlink:href="#elementknoten" transform="translate(55,320)" fill="#dfac20"/>
+  <text transform="translate(105,340)">li</text>
+  <path d="M105,350 v30"/> 
+  <use xlink:href="#link" transform="translate(80,380)" />
+  <text fill="#fff" transform="translate(130,460)">Linktext 1</text>  
+
+  <use xlink:href="#line" x="0" y="0" transform="translate(180,290) scale(1.2,1)"/>    
+  <use xlink:href="#elementknoten" transform="translate(205,320)" fill="#dfac20"/>
+  <text transform="translate(255,340)">li</text>    
+  <path d="M255,350 v30"/>    
+  <use xlink:href="#link" transform="translate(230,380)" />
+  <text fill="#fff" transform="translate(280,460)">Linktext 2</text> 
+    
+  <use xlink:href="#elementknoten" transform="translate(500,200)" fill="#dfac20"/>
+  <text transform="translate(550,220)">main</text>
+  
+  <use xlink:href="#line" x="0" y="0" transform="translate(550,230) scale(-1,1)"/>  
+  <use xlink:href="#elementknoten" transform="translate(410,260)" fill="#dfac20"/>
+  <text transform="translate(460,280)">h1</text>
+  <path d="M450,290 l-30,30"/> 
+  <use xlink:href="#knoten" transform="translate(350,320)" fill="#c32e04"/>
+  <text fill="#fff" transform="translate(400,340)">Überschrift</text>
+  
+  <use xlink:href="#line" x="0" y="0" transform="translate(550,230) scale(1,1)"/>  
+  <use xlink:href="#knoten" transform="translate(575,260)" fill="#5a9900"/>
+  <text transform="translate(625,280)">Kommentar</text>  
+  
+  <path d="M550,230 v90"/>  
+  <use xlink:href="#elementknoten" transform="translate(500,320)" fill="#dfac20"/>
+  <text transform="translate(550,340)">p</text>
+  
+  <use xlink:href="#line" x="0" y="0" transform="translate(550,350) scale(-1.5,1)"/>    
+  <use xlink:href="#knoten" transform="translate(400,380)" fill="#c32e04"/>
+  <text fill="#fff" transform="translate(450,400)">Textinhalt</text> 
+  
+    <use xlink:href="#line" x="0" y="0" transform="translate(550,350) scale(0.7,1)"/>    
+  <use xlink:href="#elementknoten" transform="translate(540,380)" fill="#dfac20"/>
+  <text transform="translate(590,400)">img</text> 
+  <path d="M616,395 h25"/>
+  <rect x="630" y="381" rx="5" ry="5" width="50" height="30" stroke-width="1" stroke="#666666" fill="#3983ab" />
+  <text transform="translate(655,400)">src</text> 
+</svg>

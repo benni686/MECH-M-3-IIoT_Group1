@@ -1,0 +1,64 @@
+project:
+  type: book
+
+book:
+  title: "Industrial IoT"
+  date: last-modified
+  reader-mode: true
+  page-footer:
+    left: Industrial IoT 1 WiSe 2025 (MECH-M-4-IIoT)
+    center: "[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) Julian Huber"
+    right: This book was built with <a href="https://quarto.org/">Quarto</a>.
+  author:
+    - name: "Julian Huber"
+      orcid: 0000-0002-0678-6855
+      affiliation: "MCI | The Entrepreneurial School"
+  license: "CC BY-NC-SA"
+  site-url: https://github.com/jhumci/
+  repo-url: https://github.com/jhumci/
+  repo-branch: main
+  repo-actions: [edit, issue]
+  chapters:
+    - index.qmd
+    - intro.qmd
+    - part: microcontroller/motivation.qmd
+      chapters:
+        - microcontroller/task.qmd
+        - microcontroller/reading.qmd
+    - part: mqtt/motivation.qmd
+      chapters:
+        - mqtt/task.qmd
+        - mqtt/reading.qmd
+    - part: networking/motivation.qmd
+      chapters:
+        - networking/task.qmd
+        - networking/reading.qmd
+    - part: rest/motivation.qmd
+      chapters:
+        - rest/task.qmd
+        - rest/reading.qmd
+    - part: cloud/motivation.qmd
+      chapters:
+        - cloud/task.qmd
+        - cloud/reading.qmd
+    - part: cicd/motivation.qmd
+      chapters:
+        - cicd/task.qmd
+        - cicd/reading.qmd
+bibliography: references.bib
+
+format:
+  html:
+    theme:
+      light: [flatly, style.css]
+      dark: [darkly, dark-style.css]
+    default-image-extension: svg
+  pdf:
+    documentclass: scrreprt
+    default-image-extension: png
+    keep-tex: true
+    include-before-body: 
+      - text: \ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[enhanced jigsaw, breakable, sharp corners, bottomrule=0mm, colback=white, after skip=-5mm, grow to left by=1mm, grow to right by=1mm]\end{tcolorbox}\vspace*{-0.1\baselineskip}}{\vspace*{-1.9\baselineskip}\begin{tcolorbox}[enhanced jigsaw, breakable, sharp corners, toprule=0mm, opacityback=0, grow to left by=1mm, grow to right by=1mm]\end{tcolorbox}}\fi
+
+
+

@@ -1,0 +1,45 @@
+openapi: 3.0.3
+info:
+  title: Microcontroller REST API
+  description: |
+    REST-Schnittstelle des Microcontrollers zur Konfiguration.
+    Hinweis: Kommunikation unverschlüsselt (HTTP).
+  version: 1.0.0
+servers:
+  - url: http://192.168.0.100
+    description: Beispiel-Microcontroller
+
+paths:
+  /config:
+    get:
+      summary: Konfiguration abrufen
+      description: Gibt die aktuelle Konfiguration zurück (z.B. Sendeintervall).
+      responses:
+        '200':
+          description: Erfolgreiche Antwort mit der aktuellen Konfiguration
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  interval:
+                    type: integer
+                    description: Sendeintervall in Sekunden
+                    example: 60
+    post:
+      summary: Konfiguration setzen
+      description: Überschreibt die Konfiguration (z.B. neues Sendeintervall).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                interval:
+                  type: integer
+                  description: Neues Sendeintervall in Sekunden
+                  example: 120
+      responses:
+        '200':
+          description: Konfiguration erfolgreich gesetzt

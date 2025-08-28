@@ -1,0 +1,16 @@
+name: Validate AsyncAPI Spec
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install AsyncAPI CLI
+        run: npm install -g @asyncapi/cli
+      - name: Validate asyncapi.yaml
+        run: asyncapi validate asyncapi.yaml

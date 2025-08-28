@@ -1,0 +1,4 @@
+jQuery(document).ready(function(){jQuery("#diyfeMobileNav > a").click(function(){jQuery("#diyfeMobileNav ul.mainNav1").slideToggle();if(jQuery(this).hasClass('navOpen')){jQuery("#diyfeMobileNav").find('li').removeClass('selected');jQuery("#diyfeMobileNav").find(".diyfeDropDownSubList").slideUp();}
+jQuery(this).toggleClass("navOpen");})
+jQuery(".diyfeDropDownSubOpener").click(function(){if(jQuery(this).parent().hasClass('selected')){jQuery(this).parent().removeClass('selected');jQuery(this).parent().find(".diyfeDropDownSubList").slideUp();}else{jQuery(this).parent().addClass('selected');jQuery(this).parent().children("li .diyfeDropDownSubList").slideDown();jQuery('html, body').animate({scrollTop:jQuery(this).parent().offset().top},500);}
+return false;});});
