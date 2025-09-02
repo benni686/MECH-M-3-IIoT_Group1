@@ -2,6 +2,13 @@ project:
   type: website
   title: "MCI_SBT_B_1_GID_2"
   output-dir: _site
+  resources:
+    - docs/iot-specs/asyncapi.yaml
+    - docs/iot-specs/openapi.yaml
+    - docs/iot-specs/conventions.md
+    - src/raspi_firmware/settings.toml
+    - src/raspi_firmware/code.py
+
 
 website:
   title: "Industrial IoT"
