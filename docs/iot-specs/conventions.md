@@ -1,9 +1,9 @@
 # MQTT & Daten-Konventionen
 
 ## Topics
-- Struktur: `building/{buildingId}/room/{roomId}/sensor/{type}/state`
+- Struktur: `iiot/group/{nachname1-nachname2-nachname3}/sensor/temperature/state`
 - Nur Kleinbuchstaben und `/` als Trenner
-- Beispiel: `building/A1/room/101/sensor/temperature/state`
+- Beispiel: `iiot/group/mustermann-meier-schmidt/sensor/temperature/state`
 
 ## Payload
 - Standardformat: JSON
@@ -11,6 +11,14 @@
 - Einheit als String (z. B. `"°C"`)
 - Statuswerte: `ok`, `error`, `offline`
 
+## Endpunkt
+
+- Port: 1883
+- Username: `bobm`
+- Password: In Vorlesung erfragen
+- SSL/TLS: False
+- Client-ID: Nach eigener Konfiguration
+- MQTT-Version: 5.0
 
 # REST-API Konventionen
 

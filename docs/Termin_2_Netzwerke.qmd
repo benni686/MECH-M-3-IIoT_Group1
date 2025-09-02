@@ -1,22 +1,25 @@
 # Synchron
 
-- [Netzwerke](https://jhumci.github.io/2024_SoSe_IoT1/IoT_5_Netzwerke/)
-- [Kommunikations-Architekturen (REST)](https://jhumci.github.io/2024_SoSe_IoT1/IoT_4_Architekturen/)
+## [Netzwerke](https://jhumci.github.io/2024_SoSe_IoT1/IoT_5_Netzwerke/)
+## [Kommunikations-Architekturen (REST)](https://jhumci.github.io/2024_SoSe_IoT1/IoT_4_Architekturen/)
+## [Firewalls](https://jhumci.github.io/2023_WiSe_IoT2/IoT_6_SecuritySafety/#64-firewalls)
 
 ## Vorstellung der Aufgabenstellung
 
-- [ ] Die Netzwerkkonfiguration (z.B. WLAN-Zugangsdaten) wird über eine `config.json` Datei bereitgestellt, die der Microcontroller beim Start einliest.
-- [ ] Der Microcontroller hat zwei REST-Endpunkte (unverschlüsselt, HTTP):
+- [ ] Die Netzwerkkonfiguration (z.B. WLAN-Zugangsdaten) wird über eine Konfig-Datei [`settings.toml`](src/raspi_firmware/settings.toml) bereitgestellt, die der Microcontroller beim Start einliest.
+- [ ] Der Microcontroller hat zwei HTTP-Endpunkte (unverschlüsselt):
   - `/config` (GET, POST): Zum Abrufen und Setzen der Konfiguration (z.B. Sendeintervall).
   - `/status` (GET): Zum Abrufen des aktuellen Status des Geräts (z.B. letzte gesendeten Werte, Verbindungsstatus, Uptime).
-- Einigen sie sich in der Gesamtgruppe auf die REST-API, welche alle Sensoren unterstützen müssen und legen Sie alles fest **bis vor dem 3. Synchron-Termin**.
-- Die Schnittstellen sind in der OpenAPI Specification dokumentiert.
-- Es stehen Testfälle zur Verfügung, um die Funktionalität der REST-API zu überprüfen. Ob Sie diese Testfälle mittels eines Test-Frameworks hat Auswirkung auf die Bewertung: (z.B. [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) in VSCode (*befriedigend*)), `unittest` in Python (*gut*),oder das OpenAPI-Tooling (z.B. [Swagger Codegen](https://swagger.io/tools/swagger-codegen/)) nutzen (*sehr gut*), bleibt Ihnen überlassen. Wie die Testfälle genutzt werden, sollte in der Dokumentation beschrieben sein.
+- [ ] Einigen sie sich in der Gesamtgruppe auf die HTTP-API, welche alle Sensoren unterstützen müssen und legen Sie alles fest **bis vor dem 3. Synchron-Termin**.
+- [ ] Die Schnittstellen sind in der OpenAPI Specification dokumentiert siehe [`openapi.yaml`](docs/iot-specs/openapi.yaml) und [`conventions.md`](docs/iot-specs/conventions.md).
+- [ ] Es stehen Testfälle zur Verfügung, um die Funktionalität der HTTP-API zu überprüfen. Ob Sie diese Testfälle mittels eines Test-Frameworks hat Auswirkung auf die Bewertung: (z.B. [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) in VSCode (*befriedigend*)), `unittest` in Python (*gut*),oder das OpenAPI-Tooling (z.B. [Swagger Codegen](https://swagger.io/tools/swagger-codegen/)) nutzen (*sehr gut*), bleibt Ihnen überlassen. Wie die Testfälle genutzt werden, sollte in der Dokumentation beschrieben sein.
+- [ ] Gehen Sie davon aus, dass die an allen Standorten Zugriff auf ein WLan haben, welches durch eine externe Firewall geschützt ist (Whitelist). Schreiben Sie ein kurzen Absatz für Ihre Dokumentation, worauf die örtliche IT-Abteilung achten muss, wenn sie ihre Geräte in das Netzwerk integrieren damit die Daten auch wirklich beim MQTT-Broker ankommen. Diskutieren Sie auch, wie sie die HTTP-API aus der Ferne zugänglich machen können und welche Gefahren und Hindernisse bestehen.
+
 
 # Assynchrone Inhalte
 
-
-- Mit folgenden Inhalten sollten Sie sich vertraut machen, um die Aufgabenstellung erfolgreich zu bearbeiten:
-
+Mit folgenden Inhalten sollten Sie sich vertraut machen, um die Aufgabenstellung erfolgreich zu bearbeiten:
+- [HTTP Status Codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status): Eine Übersicht über die verschiedenen HTTP-Statuscodes und deren Bedeutung.
+- [RESTful API Resource Naming](https://restfulapi.net/resource-naming/): Empfehlungen zur Benennung von Ressourcen in RESTful APIs.
 - [Filius-Aufgaben](https://jhumci.github.io/2024_SoSe_IoT1/IoT_5_Netzwerke_Aufgaben/): Ein Netzwerk-Simulator, der es ermöglicht, Netzwerktopologien zu erstellen und zu testen. Nutzen Sie das Skript und bearbeiten Sie die Aufgaben 1-12, 21, 22 im Skriptum, um sich mit den Grundlagen von Netzwerken vertraut zu machen.
 - Machen Sie sich mit der [OpenAPI Specification](https://de.wikipedia.org/wiki/OpenAPI)

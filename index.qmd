@@ -1,0 +1,87 @@
+# Einleitung
+
+Herzlich willkommen zur Lehrveranstaltung __Industrial IoT__! Die folgenden Unterlagen beziehen sich auf die ersten drei synchronen Termine der Vorlesung, welche von Julian Huber durchgeführt und bewertet werden.
+
+Im Rahmen dieser Abgabe erweitern Sie Ihr Verständnis für die Kernkonzepte des Industrial IoT, insbesondere die Erfassung, Übertragung, Speicherung und Analyse von Sensordaten in Echtzeit sowie deren Verschlüsselung und den Umgang mit Konfigurationsdaten.
+
+Im ersten Teil der Vorlesung von Julian Huber, werden wir Grundkonzepte und Technologien des IIoT behandeln und mit einem Mikrocontroller (z.B. Raspberry Pi Pico W) kennenlernen. Im zweiten Teil der Vorlesung von Thomas Konecny, werden die Themen aufgegriffen und mit modernen Operational-Technologien (Beckhoff SPS, AWS-Cloud) vertieft.
+
+::: {.callout-warning}
+## Wichtig
+Dies ist der erste Durchlauf der Vorlesung. Entsprechend muss sich die Feinabstimmung der Aufgabenstellung und Inhalte noch entwickeln. Feedback und Anregungen sind jederzeit willkommen. Gerne mündlich oder direkt über das GitHub Repository.
+:::
+
+## Zusammenarbeit
+Die Kommunikation findet über das gemeinsam genutzte [Repository](https://github.com/jhumci/MECH-M-3-IIoT) statt. Im Wiki sind alle relevanten Informationen zu Hintergrund, Aufgabenstellung und Anforderungen zu finden.
+Für die assynchrone Kommunikation mit der Lehrveranstaltungsleitung sollen *Issues* und *Pull Requests* im GitHub Repository genutzt werden. Die Abgabe erfolgt über den Link zu einem Fork des Original-Repositories.
+
+## Einsatz von Generativer KI
+Es wird davon ausgegangen, dass sowohl in der Wissensermittlung als auch in der Umsetzung generative KI-Tools (z.B. ChatGPT, GitHub Copilot) eingesetzt werden. Dies ist ausdrücklich erlaubt und wird nicht negativ bewertet.
+
+Wichtig ist hierbei, dass Sie **reflektiert** damit umgehen:
+
+### Bei der Wissensermittlung
+
+- Kontext ist entscheidend. Formulieren Sie Ihre Fragen so, dass Sie eine Antwort erhalten, die auf Ihr konkretes Problem zugeschnitten ist. Füllen Sie die vorhandenen Input-Token mit Aufgabenbeschreibung, Anforderungen, Rahmenbedingungen, Dokumentationen, Code-Snippets, Fehlermeldungen, etc.
+- Fragen sie nicht nach der Lösung, sondern nach Lösungsoptionen. Lassen Sie sich verschiedene Ansätze und deren Vor- und Nachteile aufzeigen.
+
+### Bei der Umsetzung
+
+- Berücksichtigen Sie, dass ein großer Teil der Trainingsdaten von generativer KI oft einfache Beispiele und keine Teile von komplexen Systemen sind. Wenn Sie nach einer Lösung fragen, werden Sie oft bei einfachen Lösungen landen, die nicht mit ihrem Projekt mitwachsen können.
+- Berücksichtigen Sie, dass es verschiedene Werkzeuge für verschiedene Aufgaben gibt. Nutzen Sie die Stärken der Werkzeuge, aber seien Sie sich auch der Schwächen bewusst. Die **Autovervollständigung von Code** ist oft hilfreich, schafft es aber nicht immer den gesamten Kontext der Systemarchitektur zu verstehen. Nutzen Sie z.B. stattdessen **ChatGPT** um sich einen Vorschlag für eine Systemarchitektur geben zu lassen und die von ihm erzeugten Ordner und Dateien erklären zu lassen. Für die Softwareentwicklung gibt es auch Tools, wie **GitHub Copilot im Agent Mode** oder **Gemini CLI**, die zugriff auf das gesamte Repository und ihre Shell haben.
+
+
+## Bewertungskriterien
+
+Die Arbeit erfolgt in Zweier-Gruppen. Das sich inhaltlich und qualitativ an den Anforderungen orientierende Gesamtkonzept wird bewertet. Dabei werden folgende Kriterien berücksichtigt:
+
+- Nutzerfreundlichkeit und Dokumentation:
+    - Wie einfach ist es für einen neuen Nutzer, das System einzurichten und zu verwenden?
+    - Wie gut ist die Dokumentation? (Klarheit, Vollständigkeit, Struktur)
+    - Funktionieren die bereitgestellten Testfälle?
+- Implementierungsqualität:
+    - Wie gut ist die Qualität des Codes? (Lesbarkeit, Wartbarkeit, Modularität)
+    - Wie gut sind die Implementierung der REST-Schnittstelle und die Nutzung der OpenAPI Specification?
+    - Wie gut ist die Integration der verschiedenen Komponenten (Firmware, Datenbank, Analyse)
+- Implementierungsumfang:
+    - Wie gut erfüllt die Lösung die gestellten Anforderungen?
+    - Bei einigen Anforderungen gibt es Abstufungen, die in der Aufgabenstellung beschrieben sind. 
+
+::: {.callout-important}
+## Bewertung
+Die Bewertung der beiden Teile von IIoT erfolgt unabhängig voneinander. Die Noten (MCI-Punkte) werden anhand der SWS-Verteilung gemittelt. Zum Bestehen sin ingesamt 60% erforderlich.
+:::
+
+
+## Storyline
+Sie sind Teil eines Teams, das eine IoT-Lösung für die Überwachung von Umwelungsbedingungen in einer Produktionsanlage entwickelt. Ihre Aufgabe ist es, eine Lösung zu entwerfen und zu implementieren, die Sensordaten erfasst, diese sicher überträgt und in Echtzeit analysiert, um Anomalien zu erkennen und Berichte zu generieren.
+
+<iframe width="800" height="320" src="https://www.youtube.com/embed/e9Jyv7h8mo0" title="MCI | Teaching Factory | Side by side" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+Der Frühstücksflockenhersteller yourmuesli.at stellt an vielen Produktionsstandorten Mülsi-Mischungen her. Der Abflüssprozess wird stark durch Umweltparameter, wie Temperatur und Luftfeuchtigkeit beeinflusst. Um die Qualität der Produkte sicherzustellen, ist eine kontinuierliche Überwachung dieser Parameter erforderlich. Bisher wurde dies stark vernachlässigt. Zunehmende Probleme, wie nicht mehr knusprige Conflakes, geschmolzene Schokolade und andere Qualitätsmängel, sind aufgetreten. Es braucht keine Natural Language Processing und keine Sentiment-Analyse um die negativen Kundenbewertungen zu erkennen:
+
+> „@yourmuesli_at, sogts amoi: Solln die Haferflockn im Müsli wirklich so latschert sein wia a Regentog in Innsbruck? 🤨 Und die Schoko pickt zsamm wia a Lawinabrettl. So schmeckt des nit, gell! #MüsliFail“
+
+> „@yourmuesli_at, des Früchtemüsli schmeckt so trocken, i brauch mehr Milch als a ganzes Kalb. 🐄 So kaunst koan Tiroler ned füttern!“
+
+> „@yourmuesli_at, die Portion is so kloan, do werd in Tirol grad amol a Spatzl satt. Mia brauchn a gscheids Müsli, nit a Vogelfutter!“
+
+Das Management hat beschlossen, dass eine schnelle Reaktion erforderlich ist. Bis zum __30.11.2025__ möchte der Leiter der Qualitätssicherung Bruno Mircevski die Temperaturwerte aller Produktionsstandorts weltweit auf einem Dashboard auf seinem iPhone sehen.
+
+Da die [_Beckhoff EL3204_](https://www.beckhoff.com/de-at/produkte/i-o/ethercat-klemmen/el3xxx-analog-eingang/el3204.html) zur Zeit eine Lieferzeit von wenigen Wochen haben, kommt es nicht in Frage die bestehende Hardware zu erweitern. Sie und Ihr Team müssen daher eine alternative Lösung entwickeln, welche schnell umsetzbar, kostengünstig und vor allem einfach weltweit zu implementieren und zu warten ist. Das bedeutet, dass sie die Lösungen zentral von Innsbruck aus entwickeln und die Hardware versenden können. Vor Ort, soll die Hardware möglichst einfach an die Produktionsanlagen angeschlossen und ggf. konfiguriert werden können. Das soll anhand einer einfachen Doku auch für technisch nicht sehr versierte Nutzer:innen möglich sein. Zudem sollen Sie auch auf die Ferne dazu in der Lange sein, den Zustand der Sensoren zu überwachen und wenn nötig Einstellungen zu ändern.
+
+::: {.callout collapse="true"}
+# Aufgabenstellung
+Die Problemlösung wird in drei Teile unterteilt, welche jeweils mit einer kurzen synchronen Einheit beginnen. In dieser wird eine kurze Einführung in das Thema gegeben und der nächste Teil der Aufgabenstellung vorgestellt. Für die asynchronen Einheiten wird Ihnen weiteres Material zum Einarbeiten und Vorbereiten der Aufgabenstellung zur Verfügung gestellt.
+
+## Termin 1: Grundkonzepte
+Eine kostengünstige Lösung zur Erfassung und Übertragung der Sensordaten wäre z.B. der Einsatz von Microcontroller-Plattformen wie dem Raspberry Pi Pico W oder ESP32, die vor Ort in ein WLan integriert werden können. Hierzu kommen z.B. Raspberry Pi Pico Firmware (mit MicroPython) oder ESP32 mit Arduino in Frage. Als Sensoren können der DHT22 (Temperatur und Luftfeuchtigkeit) oder der DS18B20 (nur Temperatur) eingesetzt werden. Da es schnell gehen soll, wird auf ein eigenes Printed Circuit Board Design verzichtet. Zur Datenübertragung kommen auf Anwendungsschicht z.B. MQTT, HTTP oder FTP in Frage.
+
+## Termin 2: Netzwerke
+Da Informationen weltweit ausgetauscht werden müssen, ist der Einsatz von TCP/IP-Protokollen unerlässlich. Sie müssen sich Gedanken machen, wie die Netzwerkeinstellungen konfiguriert werden, um eine zuverlässige Kommunikation zwischen den Geräten zu gewährleisten. Zudem werden Sie der IT-Abteilung vor Ort ggf. Anweisungen geben müssen, wie die Firewalls angepasst werden müssen.
+Die Firmware der Microcontroller soll zudem eine HTTP-Schnittstelle zur Konfiguration bereitstellen, über den z.B. das Sende-Intervall angepasst werden kann, so dass Sie diese aus der Ferne warten können. Dies ist aber nur möglich, wenn sie sich im gleichen Netzwerk, wie die Mikrocontroller befinden.
+
+## Termin 3: Cloud
+Da noch nicht klar ist, wo das Dashboard in Zukunft laufen soll, entwickeln Sie direkt in einem Container. Sie bereiten einen oder mehrere Container vor, in welchen die Datenhaltung und Auswertung erfolgen. Anforderung hier ist, dass ein Container gestartet werden kann, der sowohl die Daten aller verbundener Sensoren speichert als auch die eigenen Daten visualisiert.
+:::
+

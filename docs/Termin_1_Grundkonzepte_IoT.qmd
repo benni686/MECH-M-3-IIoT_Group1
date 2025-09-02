@@ -1,28 +1,36 @@
 # Synchron
 
-- [Grundbegriffe](https://jhumci.github.io/2024_SoSe_IoT1/IoT_1_Grundbegriffe/#)
-- [Kommunikations-Architekturen (MQTT)](https://jhumci.github.io/2024_SoSe_IoT1/IoT_4_Architekturen/)
-- [Telemetrie](https://jhumci.github.io/2023_WiSe_IoT2/IoT_8_Telemetrie/)
+## [Grundbegriffe](https://jhumci.github.io/2024_SoSe_IoT1/IoT_1_Grundbegriffe/#)
+
+![](images/IoTNetwork.svg)
+
+## [Kommunikations-Architekturen (MQTT)](https://jhumci.github.io/2024_SoSe_IoT1/IoT_4_Architekturen/)
+
+![](images/BrokerSequence.png)
+
+
+## [Telemetrie](https://jhumci.github.io/2023_WiSe_IoT2/IoT_8_Telemetrie/)
+
+![](images/raspberry_pi_Pico-R3-Pinout-narrow.png)
+
 
 ## Vorstellung der Aufgabenstellung
 
-- Alle bekommen einen Microcontroller und einen Sensor. 
-- Wir möchten die Teaching Factory mit Low-Cost-Sensorik anreichern.
-- Über Gibthub, wird gemeinsam eine Abstrakte Klasse entwickelt, um sich über ein Datenaustauschformat (JSON) zu einigen, das hat bestimmte Anforderungen, die alle Sensoren erfüllen müssen.
-- Alle verbinden sich mit einem MQTT-Broker und streamen ihre Daten dahin.
-- Daten werden gespeichert und alle Erfassen, welche Sensoren am stärksten mit ihren korrelieren.
-
-
-- [] Sobald er startet, sendet der Sensor seine Daten an den Broker in das Topic `iiot/sensor/{nachname1-nachname2-nachname3}/data`.
-- Einigen sie sich in der Gesamtgruppe auf ein JSON-Format, das alle Sensoren unterstützen müssen und legen Sie alles fest **bis vor dem 2. Synchron-Termin**.
-- [] Implementieren Sie den neuen Standard in ihrer Firmware.
+- Jede Gruppe entwickelt mit einem eigenen Microcontroller und Sensor.
+- [ ] Erstellen Sie einen Fork von diesem [Git-Repository](https://github.com/jhumci/MECH-M-3-IIoT) und laden Sie `jhumci` ein
+- [ ] Verbinden Sie den Sensor mit dem Microcontroller und lesen Sie die Sensordaten indem Sie die [`code.py`](src/raspi_firmware/code.py) anpassen. Für den ersten Schritt können sie auch ein einfaches Skript ohne konfigurationsdatei schreiben.
+- [ ] Implementieren Sie eine Lösung, die die Spezifikation in den Dateien [`conventions.md`](docs/iot-specs/conventions.md) und [asyncapi.yaml](docs/iot-specs/asyncapi.yaml) erfüllt.
+- [ ] Überprüfen Sie mittels [MQTT Explorer](https://mqtt-explorer.com/) ob Ihre MQTT-Nachrichten korrekt gesendet und empfangen werden.
+- [ ] Refactoren Sie Ihren Code, um die Lesbarkeit und Wartbarkeit zu verbessern. Legen Sie dazu eine Konfigurationsdatei [`settings.toml`](src/raspi_firmware/settings.toml) an und definieren Sie sinnvoller Klassen in ihrer Firmware.
 
 # Assynchrone Inhalte
 
-- Mit folgenden Inhalten sollten Sie sich vertraut machen, um die Aufgabenstellung erfolgreich zu bearbeiten:
+Mit folgenden Inhalten sollten Sie sich vertraut machen, um die Aufgabenstellung erfolgreich zu bearbeiten:
 
-- [Wokwi](https://wokwi.com/projects/new/micropython-pi-pico-w): Ein Online-Simulator für Mikrocontroller, der es ermöglicht, Schaltungen zu entwerfen und zu testen. Nutzen Sie den Simulator, um einfache Schaltungen mit dem Raspberry Pi Pico W zu erstellen und zu testen.
+- [Wokwi](https://wokwi.com/projects/new/micropython-pi-pico-w): Ein Online-Simulator für Mikrocontroller, der es ermöglicht, Schaltungen zu entwerfen und zu testen. Nutzen Sie bei Bedarf den Simulator, um einfache Schaltungen mit dem Raspberry Pi Pico W zu erstellen und zu testen.
 - [AWS Whitepaper on MQTT](https://docs.aws.amazon.com/whitepapers/latest/designing-mqtt-topics-aws-iot-core/mqtt-design-best-practices.html)
-- [MQTT Explorer](https://mqtt-explorer.com/): Free and Open Source MQTT Client zur Visualisierung von MQTT-Nachrichten.
 - [AsyncAPI](https://www.asyncapi.com/en): Eine Spezifikation für die Beschreibung von asynchronen APIs, die Ihnen helfen kann, Ihre MQTT-Interaktionen zu dokumentieren und zu gestalten.
-
+- [MQTT Explorer](https://mqtt-explorer.com/): Free and Open Source MQTT-Client zur Visualisierung von MQTT-Nachrichten.
+- [Einführung in MicroPython](https://docs.micropython.org/en/latest/esp32/tutorial/intro.html)
+- [Einführung in Circuit Python](https://learn.adafruit.com/welcome-to-circuitpython)
+- [Einführung in PlatformIO](https://docs.platformio.org/en/latest/)

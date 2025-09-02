@@ -8,20 +8,17 @@ info:
 
 servers:
   mqttBroker:
-    url: mqtt://broker.example.com
+    url: mqtt://158.180.44.197
+    port: 1883
     protocol: mqtt
 
 channels:
-  building/{buildingId}/room/{roomId}/sensor/temperature/state:
+  iiot/group/{nachname1-nachname2-nachname3}/sensor/temperature/state:
     description: |
-      Publiziert Temperaturmessungen aus einem Raum in einem Gebäude.
+      Publiziert Temperaturmessungen einer Gruppe
     parameters:
-      buildingId:
-        description: Eindeutige Kennung des Gebäudes
-        schema:
-          type: string
-      roomId:
-        description: Eindeutige Kennung des Raumes
+      group:
+        description: Nachnamen aller Gruppenmitglieder
         schema:
           type: string
     publish:
@@ -49,7 +46,7 @@ components:
           example: "2025-08-28T10:00:00Z"
         sensor_id:
           type: string
-          description: Eindeutige ID des Sensors
+          description: Eindeutige ID des Sensors aus der Konfiguration
           example: "temp-101"
         value:
           type: number

@@ -1,0 +1,33 @@
+# Dokumentation
+
+:::{.callout-tip}
+## Hinweis
+Hier ist Platz für ihre Dokumentation. Dieses Dokument ist in [Quarto](https://quarto.org/) geschrieben und wird automatisch in HTML umgewandelt. Da Quarto ein Superset von Markdown ist, können Sie einfach wie gewohnt arbeiten aber auch weitere Funktionen nutzen. Zudem ist ein Strukturvorschlag gegeben, dieser muss aber nicht unbedingt eingehalten werden. Wichtig ist, dass die Dokumentation klar und verständlich ist und die relevanten Files auch als Link eingebunden werden.
+:::
+
+## Zusammenfassung der Aufgabenstellung und Ziele
+
+
+## Anleitung für User
+
+### Konfiguration und Start des Mikrocontrollers
+
+### Empfehlungen für die IT-Abteilung
+
+
+## Anleitung für Developer
+
+- Das repository ist als `pdm`-Projekt strukturiert. Nutzen Sie `pdm install`, um die Abhängigkeiten zu installieren.
+- Für Dokumentation wurde [Quarto](https://quarto.org/) verwendet, die `quarto-cli`-Befehle sind ebenfalls in der `pdm`-Umgebung verfügbar.
+    - Führen Sie `quarto preview` im `docs`-Verzeichnis aus, um die Dokumentation lokal zu starten.
+    - Zudem existiert eine github-action zur automatischen Erstellung der Dokumentation, die diese auch automatisch als Website bereitstellt, wenn Sie in den Main-Branch pushen. Wenn sie diese entfernen wollen, müssen sie die Datei `.github/workflows/publish.yml` anpassen.
+
+### Struktur des Projekts
+
+- `docs/`: Quarto Dokumentation
+- `docs/iot-specs`: Spezifikationen für IoT-Geräte
+- `docs/images`: Bilder für die Dokumentation
+- `src/esp32_firmware`: Quellcode mit Ansätzen für die Firmware-Entwicklung
+- `src/raspi_firmware`: Quellcode mit Ansätzen für die Firmware-Entwicklung
+- `src/cloud`: Quellcode mit Ansätzen für die Cloud-Entwicklung
+- `tests/`: Tests für den Quellcode

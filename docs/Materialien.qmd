@@ -1,0 +1,12 @@
+# Materialen
+
+Sie erhalten in der ersten Sitzung die folgenden Materialien ausgehändigt:
+
+- Raspberry Pi Pico W
+- Temperatursensor
+- Kabel
+- USB-Micro-B-Kabel (bei Bedarf)
+
+Bitte geben Sie diese nach Ende des Semesters unaufgefordert zurück, erst dann wird die Note freigegeben.
+
+Der Einsatz anderer Hardware kann mit der Lehrveranstaltungsleitung abgesprochen werden.

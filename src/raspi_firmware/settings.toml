@@ -1,0 +1,44 @@
+# settings.toml
+
+# ===================================================================
+# IoT Environmental Monitoring - Konfigurationsdatei
+# Diese Datei wird vom Raspberry Pi Pico W beim Start gelesen.
+# Bitte die WLAN-Daten vor Ort anpassen.
+# ===================================================================
+
+# --- Geräteeinstellungen ---
+# Eindeutiger Name für diesen Sensor, wird in den MQTT-Nachrichten verwendet.
+# z.B. "prod-hall-3-vomp"
+device_id = "yourmuesli-innsbruck-01"
+names = "{nachname1-nachname2-nachname3}"
+
+# Optionaler, menschenlesbarer Standort für das Web-Interface.
+location = "Produktionshalle 1, Innsbruck"
+
+
+# --- WLAN-Einstellungen ---
+# SSID (Name) und Passwort des lokalen WLAN-Netzwerks.
+# WICHTIG: Diese müssen vor Ort eingetragen werden!
+wifi_ssid = "yourmuesli-produktion"
+wifi_password = "SehrGeheimesPasswort123"
+
+
+# --- MQTT Broker Einstellungen ---
+# Die Adresse des zentralen Servers (Broker), an den die Daten gesendet werden.
+broker_address = "broker.hivemq.com"
+broker_port = 1883
+
+# Topics sind wie "Kanäle", auf denen Nachrichten gesendet werden.
+# Das Haupt-Topic für die Sensordaten (Temperatur, Luftfeuchtigkeit).
+telemetry_topic = "yourmuesli/telemetry"
+# Das Topic für Statusmeldungen (z.B. "online", "rebooting").
+status_topic = "yourmuesli/status"
+
+
+# --- Sensor & Applikations-Einstellungen ---
+# Das Intervall in Sekunden, in dem Daten gelesen und gesendet werden.
+reading_interval_seconds = 60
+
+# Der GPIO Pin des Raspberry Pi Pico, an dem das Datenkabel des
+# DHT22-Sensors angeschlossen ist (z.B. GP15).
+sensor_pin = 15

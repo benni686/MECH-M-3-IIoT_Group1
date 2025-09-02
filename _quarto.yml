@@ -1,40 +1,35 @@
 project:
-  type: book
+  type: website
+  title: "MCI_SBT_B_1_GID_2"
+  output-dir: _site
 
-book:
+website:
   title: "Industrial IoT"
-  date: last-modified
   reader-mode: true
   page-footer:
     left: Industrial IoT 1 WiSe 2025 (MECH-M-4-IIoT)
     center: "[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) Julian Huber"
     right: This book was built with <a href="https://quarto.org/">Quarto</a>.
-  author:
-    - name: "Julian Huber"
-      orcid: 0000-0002-0678-6855
-      affiliation: "MCI | The Entrepreneurial School"
-  license: "CC BY-NC-SA"
   site-url: https://github.com/jhumci/MECH-M-3-IIoT
   repo-url: https://github.com/jhumci/MECH-M-3-IIoT
   repo-branch: main
   repo-actions: [edit, issue]
-  chapters:
-    - docs/index.qmd
-    - part: docs/Termin_1_Grundkonzepte_IoT.qmd
-bibliography: docs/references.bib
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: docs/Materialien.qmd
+        text: Materialien
+      - href: docs/Termin_1_Grundkonzepte_IoT.qmd
+        text: Termin 1 Grundkonzepte IoT
+      - href: docs/Termin_2_Netzwerke.qmd
+        text: Termin 2 Netzwerke
+      - href: docs/Termin_3_Cloud.qmd
+        text: Termin 3 Cloud
+      - href: docs/Dokumentation.qmd
+        text: Eigene Dokumentation
 
 format:
   html:
-    theme:
-      light: [flatly, style.css]
-      dark: [darkly, dark-style.css]
-    default-image-extension: svg
-  pdf:
-    documentclass: scrreprt
-    default-image-extension: png
-    keep-tex: true
-    include-before-body: 
-      - text: \ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[enhanced jigsaw, breakable, sharp corners, bottomrule=0mm, colback=white, after skip=-5mm, grow to left by=1mm, grow to right by=1mm]\end{tcolorbox}\vspace*{-0.1\baselineskip}}{\vspace*{-1.9\baselineskip}\begin{tcolorbox}[enhanced jigsaw, breakable, sharp corners, toprule=0mm, opacityback=0, grow to left by=1mm, grow to right by=1mm]\end{tcolorbox}}\fi
-
-
-
+    theme: cosmo
+    toc: true
