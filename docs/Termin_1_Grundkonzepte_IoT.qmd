@@ -27,6 +27,7 @@
 
 Mit folgenden Inhalten sollten Sie sich vertraut machen, um die Aufgabenstellung erfolgreich zu bearbeiten:
 
+- [MicroPython](https://mciwing.github.io/micropython/): Einleitung zur Arbeit mit MicroPython mit ESP32
 - [Wokwi](https://wokwi.com/projects/new/micropython-pi-pico-w): Ein Online-Simulator für Mikrocontroller, der es ermöglicht, Schaltungen zu entwerfen und zu testen. Nutzen Sie bei Bedarf den Simulator, um einfache Schaltungen mit dem Raspberry Pi Pico W zu erstellen und zu testen.
 - [AWS Whitepaper on MQTT](https://docs.aws.amazon.com/whitepapers/latest/designing-mqtt-topics-aws-iot-core/mqtt-design-best-practices.html)
 - [AsyncAPI](https://www.asyncapi.com/en): Eine Spezifikation für die Beschreibung von asynchronen APIs, die Ihnen helfen kann, Ihre MQTT-Interaktionen zu dokumentieren und zu gestalten.

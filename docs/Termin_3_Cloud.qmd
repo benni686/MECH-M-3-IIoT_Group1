@@ -1,7 +1,8 @@
 # Synchron
 
-- [Cloud Computing und Virtualisierung](https://jhumci.github.io/2023_WiSe_IoT2/IoT_7_Cloud/#)
-- [Security und Safety](https://jhumci.github.io/2023_WiSe_IoT2/IoT_6_SecuritySafety/)
+## [Cloud Computing und Virtualisierung](https://jhumci.github.io/2023_WiSe_IoT2/IoT_7_Cloud/#)
+
+## [Security und Safety](https://jhumci.github.io/2023_WiSe_IoT2/IoT_6_SecuritySafety/)
 
 ## Vorstellung der Aufgabenstellung
 

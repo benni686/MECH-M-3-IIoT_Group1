@@ -49,7 +49,7 @@ Die Arbeit erfolgt in Zweier-Gruppen. Das sich inhaltlich und qualitativ an den 
 
 ::: {.callout-important}
 ## Bewertung
-Die Bewertung der beiden Teile von IIoT erfolgt unabhängig voneinander. Die Noten (MCI-Punkte) werden anhand der SWS-Verteilung gemittelt. Zum Bestehen sin ingesamt 60% erforderlich.
+Die Bewertung der beiden Teile von IIoT erfolgt unabhängig voneinander. Die Noten (MCI-Punkte) werden anhand der SWS-Verteilung gemittelt. Zum Bestehen sind insgesamt 60% erforderlich.
 :::
 
 
