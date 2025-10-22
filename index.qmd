@@ -4,7 +4,7 @@ Herzlich willkommen zur Lehrveranstaltung __Industrial IoT__! Die folgenden Unte
 
 Im Rahmen dieser Abgabe erweitern Sie Ihr Verständnis für die Kernkonzepte des Industrial IoT, insbesondere die Erfassung, Übertragung, Speicherung und Analyse von Sensordaten in Echtzeit sowie deren Verschlüsselung und den Umgang mit Konfigurationsdaten.
 
-Im ersten Teil der Vorlesung von Julian Huber, werden wir Grundkonzepte und Technologien des IIoT behandeln und mit einem Mikrocontroller (z.B. Raspberry Pi Pico W) kennenlernen. Im zweiten Teil der Vorlesung von Thomas Konecny, werden die Themen aufgegriffen und mit modernen Operational-Technologien (Beckhoff SPS, AWS-Cloud) vertieft.
+Im ersten Teil der Vorlesung von Christoph Egger, werden wir Grundkonzepte und Technologien des IIoT behandeln und mit einem Mikrocontroller (z.B. Raspberry Pi Pico W) kennenlernen. Im zweiten Teil der Vorlesung von Thomas Konecny, werden die Themen aufgegriffen und mit modernen Operational-Technologien (Beckhoff SPS, AWS-Cloud) vertieft.
 
 ::: {.callout-warning}
 ## Wichtig
