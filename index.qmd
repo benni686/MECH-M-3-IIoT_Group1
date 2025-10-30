@@ -1,6 +1,6 @@
 # Einleitung
 
-Herzlich willkommen zur Lehrveranstaltung __Industrial IoT__! Die folgenden Unterlagen beziehen sich auf die ersten drei synchronen Termine der Vorlesung, welche von Julian Huber durchgeführt und bewertet werden.
+Herzlich willkommen zur Lehrveranstaltung __Industrial IoT__! Die folgenden Unterlagen beziehen sich auf die ersten drei synchronen Termine der Vorlesung, welche von Christoph Egger durchgeführt und bewertet werden.
 
 Im Rahmen dieser Abgabe erweitern Sie Ihr Verständnis für die Kernkonzepte des Industrial IoT, insbesondere die Erfassung, Übertragung, Speicherung und Analyse von Sensordaten in Echtzeit sowie deren Verschlüsselung und den Umgang mit Konfigurationsdaten.
 
@@ -75,7 +75,7 @@ Da die [_Beckhoff EL3204_](https://www.beckhoff.com/de-at/produkte/i-o/ethercat-
 Die Problemlösung wird in drei Teile unterteilt, welche jeweils mit einer kurzen synchronen Einheit beginnen. In dieser wird eine kurze Einführung in das Thema gegeben und der nächste Teil der Aufgabenstellung vorgestellt. Für die asynchronen Einheiten wird Ihnen weiteres Material zum Einarbeiten und Vorbereiten der Aufgabenstellung zur Verfügung gestellt.
 
 ## Termin 1: Grundkonzepte
-Eine kostengünstige Lösung zur Erfassung und Übertragung der Sensordaten wäre z.B. der Einsatz von Microcontroller-Plattformen wie dem Raspberry Pi Pico W oder ESP32, die vor Ort in ein WLan integriert werden können. Hierzu kommen z.B. Raspberry Pi Pico Firmware (mit MicroPython) oder ESP32 mit Arduino in Frage. Als Sensoren können der DHT22 (Temperatur und Luftfeuchtigkeit) oder der DS18B20 (nur Temperatur) eingesetzt werden. Da es schnell gehen soll, wird auf ein eigenes Printed Circuit Board Design verzichtet. Zur Datenübertragung kommen auf Anwendungsschicht z.B. MQTT, HTTP oder FTP in Frage.
+Eine kostengünstige Lösung zur Erfassung und Übertragung der Sensordaten wäre z.B. der Einsatz von Microcontroller-Plattformen wie dem Raspberry Pi Pico W oder ESP32, die vor Ort in ein WLan integriert werden können. Hierzu kommen z.B. Raspberry Pi Pico Firmware (mit MicroPython) oder ESP32 mit Arduino in Frage. Als Sensor wird der DHT11 (Temperatur und Luftfeuchtigkeit) eingesetzt. Da es schnell gehen soll, wird auf ein eigenes Printed Circuit Board Design verzichtet. Zur Datenübertragung kommen auf Anwendungsschicht z.B. MQTT, HTTP oder FTP in Frage.
 
 ## Termin 2: Netzwerke
 Da Informationen weltweit ausgetauscht werden müssen, ist der Einsatz von TCP/IP-Protokollen unerlässlich. Sie müssen sich Gedanken machen, wie die Netzwerkeinstellungen konfiguriert werden, um eine zuverlässige Kommunikation zwischen den Geräten zu gewährleisten. Zudem werden Sie der IT-Abteilung vor Ort ggf. Anweisungen geben müssen, wie die Firewalls angepasst werden müssen.
