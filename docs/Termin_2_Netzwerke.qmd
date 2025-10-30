@@ -6,12 +6,12 @@
 
 ## Vorstellung der Aufgabenstellung
 
-- [ ] Die Netzwerkkonfiguration (z.B. WLAN-Zugangsdaten) wird über eine Konfig-Datei [`settings.toml`](src/raspi_firmware/settings.toml) bereitgestellt, die der Microcontroller beim Start einliest.
+- [ ] Die Netzwerkkonfiguration (z.B. WLAN-Zugangsdaten) wird über eine Konfig-Datei [`settings.toml`](https://github.com/jhumci/MECH-M-3-IIoT/blob/main/src/raspi_firmware/settings.toml) bereitgestellt, die der Microcontroller beim Start einliest.
 - [ ] Der Microcontroller hat zwei HTTP-Endpunkte (unverschlüsselt):
   - `/config` (GET, POST): Zum Abrufen und Setzen der Konfiguration (z.B. Sendeintervall).
   - `/status` (GET): Zum Abrufen des aktuellen Status des Geräts (z.B. letzte gesendeten Werte, Verbindungsstatus, Uptime).
 - [ ] Einigen sie sich in der Gesamtgruppe auf die HTTP-API, welche alle Sensoren unterstützen müssen und legen Sie alles fest **bis vor dem 3. Synchron-Termin**.
-- [ ] Die Schnittstellen sind in der OpenAPI Specification dokumentiert siehe [`openapi.yaml`](docs/iot-specs/openapi.yaml) und [`conventions.md`](docs/iot-specs/conventions.md).
+- [ ] Die Schnittstellen sind in der OpenAPI Specification dokumentiert siehe [`openapi.yaml`](https://github.com/jhumci/MECH-M-3-IIoT/blob/main/docs/iot-specs/openapi.yaml) und [`conventions.md`](https://github.com/jhumci/MECH-M-3-IIoT/blob/main/docs/iot-specs/conventions.md).
 - [ ] Es stehen Testfälle zur Verfügung, um die Funktionalität der HTTP-API zu überprüfen. Ob Sie diese Testfälle mittels eines Test-Frameworks hat Auswirkung auf die Bewertung: (z.B. [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) in VSCode (*befriedigend*)), `unittest` in Python (*gut*),oder das OpenAPI-Tooling (z.B. [Swagger Codegen](https://swagger.io/tools/swagger-codegen/)) nutzen (*sehr gut*), bleibt Ihnen überlassen. Wie die Testfälle genutzt werden, sollte in der Dokumentation beschrieben sein.
 - [ ] Gehen Sie davon aus, dass die an allen Standorten Zugriff auf ein WLan haben, welches durch eine externe Firewall geschützt ist (Whitelist). Schreiben Sie ein kurzen Absatz für Ihre Dokumentation, worauf die örtliche IT-Abteilung achten muss, wenn sie ihre Geräte in das Netzwerk integrieren damit die Daten auch wirklich beim MQTT-Broker ankommen. Diskutieren Sie auch, wie sie die HTTP-API aus der Ferne zugänglich machen können und welche Gefahren und Hindernisse bestehen.
 
