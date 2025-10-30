@@ -2,8 +2,8 @@
 
 Sie erhalten in der ersten Sitzung die folgenden Materialien ausgehändigt:
 
-- Raspberry Pi Pico W
-- Temperatursensor
+- Raspberry Pi Pico W oder ESP32
+- Temperatursensor DHT11
 - Kabel
 - USB-Micro-B-Kabel (bei Bedarf)
 
