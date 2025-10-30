@@ -17,11 +17,11 @@
 ## Vorstellung der Aufgabenstellung
 
 - Jede Gruppe entwickelt mit einem eigenen Microcontroller und Sensor.
-- [ ] Erstellen Sie einen Fork von diesem [Git-Repository](https://github.com/jhumci/MECH-M-3-IIoT) und laden Sie `jhumci` ein
-- [ ] Verbinden Sie den Sensor mit dem Microcontroller und lesen Sie die Sensordaten indem Sie die [`code.py`](src/raspi_firmware/code.py) anpassen. Für den ersten Schritt können sie auch ein einfaches Skript ohne konfigurationsdatei schreiben.
-- [ ] Implementieren Sie eine Lösung, die die Spezifikation in den Dateien [`conventions.md`](docs/iot-specs/conventions.md) und [asyncapi.yaml](docs/iot-specs/asyncapi.yaml) erfüllt.
+- [ ] Erstellen Sie einen Fork von diesem [Git-Repository](https://github.com/jhumci/MECH-M-3-IIoT) und laden Sie `Robo-Chris` ein
+- [ ] Verbinden Sie den Sensor mit dem Microcontroller und lesen Sie die Sensordaten indem Sie die [`code.py`](https://github.com/jhumci/MECH-M-3-IIoT/blob/main/src/raspi_firmware/code.py) anpassen. Für den ersten Schritt können sie auch ein einfaches Skript ohne konfigurationsdatei schreiben.
+- [ ] Implementieren Sie eine Lösung, die die Spezifikation in den Dateien [`conventions.md`](https://github.com/jhumci/MECH-M-3-IIoT/blob/main/docs/iot-specs/conventions.md) und [asyncapi.yaml](https://github.com/jhumci/MECH-M-3-IIoT/blob/main/docs/iot-specs/asyncapi.yaml) erfüllt.
 - [ ] Überprüfen Sie mittels [MQTT Explorer](https://mqtt-explorer.com/) ob Ihre MQTT-Nachrichten korrekt gesendet und empfangen werden.
-- [ ] Refactoren Sie Ihren Code, um die Lesbarkeit und Wartbarkeit zu verbessern. Legen Sie dazu eine Konfigurationsdatei [`settings.toml`](src/raspi_firmware/settings.toml) an und definieren Sie sinnvoller Klassen in ihrer Firmware.
+- [ ] Refactoren Sie Ihren Code, um die Lesbarkeit und Wartbarkeit zu verbessern. Legen Sie dazu eine Konfigurationsdatei [`settings.toml`](https://github.com/jhumci/MECH-M-3-IIoT/blob/main/src/raspi_firmware/settings.toml) an und definieren Sie sinnvoller Klassen in ihrer Firmware.
 
 # Assynchrone Inhalte
 
