@@ -7,7 +7,7 @@
 # Datum: 02.09.2025
 #
 # Hardware: Raspberry Pi Pico W
-# Sensor: DHT22 (Temperatur & Luftfeuchtigkeit)
+# Sensor: DHT11 (Temperatur & Luftfeuchtigkeit)
 # Software: CircuitPython
 # ===================================================================
 
@@ -22,6 +22,10 @@
 class ConfigManager:
     """
     Verwaltet das Laden und Speichern der Konfiguration aus der 'settings.toml'.
+
+    Hinweis: CircuitPython bringt kein 'toml'-Modul mit. Ein minimaler Parser
+    liegt unter lib/toml.py (mit 'import toml' nutzbar), dazu den Ordner 'lib'
+    auf das CIRCUITPY-Laufwerk kopieren.
     """
 
     def __init__(self, filepath: str):
@@ -44,6 +48,16 @@ class ConfigManager:
         """
         Speichert Änderungen zurück in die TOML-Datei und startet den
         Mikrocontroller neu, um die neuen Einstellungen zu übernehmen.
+
+        Achtung:
+        - Standardmäßig kann CircuitPython nicht auf das eigene Dateisystem
+          schreiben (nur der angeschlossene Computer per USB). Dafür muss in
+          einer 'boot.py' das Dateisystem mit storage.remount("/", readonly=False)
+          beschreibbar gemacht werden - danach kann der Computer nicht mehr
+          schreiben. Überlegen Sie, wie Sie zwischen beiden Modi wechseln
+          (z.B. über einen Taster/Pin, der in boot.py abgefragt wird).
+        - toml.dump() schreibt nur "schluessel = wert"-Zeilen, Kommentare in
+          der settings.toml gehen dabei verloren.
 
         :param settings: Das Dictionary mit den zu speichernden Einstellungen.
         """
@@ -98,7 +112,7 @@ class NetworkManager:
 # ===================================================================
 class Sensor:
     """
-    Kapselt die Logik zum Auslesen des DHT22-Sensors.
+    Kapselt die Logik zum Auslesen des DHT11-Sensors.
     """
 
     def __init__(self, pin_number: int):

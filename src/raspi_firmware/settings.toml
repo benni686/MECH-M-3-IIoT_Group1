@@ -44,5 +44,5 @@ status_topic = "iiot/group/{nachname1-nachname2-nachname3}/status"
 reading_interval_seconds = 60
 
 # Der GPIO Pin des Raspberry Pi Pico, an dem das Datenkabel des
-# DHT22-Sensors angeschlossen ist (z.B. GP15).
+# DHT11-Sensors angeschlossen ist (z.B. GP15).
 sensor_pin = 15
