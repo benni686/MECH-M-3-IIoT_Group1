@@ -36,9 +36,10 @@ public:
     Sensor(String type, String unit, float minVal, float maxVal, String loc, String desc, bool isSecure) {
         useSecureConnection = isSecure;
 
-        char macStr[18];
-        sprintf(macStr, "%02X%02X%02X", WiFi.macAddress()[3], WiFi.macAddress()[4], WiFi.macAddress()[5]);
-        sensorId = String(MQTT_CLIENT_ID_PREFIX) + String(macStr);
+        // TODO: Die Client-ID muss am Broker eindeutig sein – z.B. aus der MAC-Adresse
+        // oder dem Gruppennamen ableiten. Verbinden sich zwei Geräte mit derselben ID,
+        // trennt der Broker jeweils das zuvor verbundene Gerät.
+        sensorId = String(MQTT_CLIENT_ID_PREFIX) + "TODO-eindeutige-ID";
 
         preferences.begin("sensor_config", false);
         sensorName = preferences.getString("sensorName", "DefaultSensor");
