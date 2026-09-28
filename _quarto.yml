@@ -1,6 +1,6 @@
 project:
   type: website
-  title: "MCI_SBT_B_1_GID_2"
+  title: "Industrial Internet of Things"
   output-dir: _site
   resources:
     - docs/iot-specs/asyncapi.yaml
@@ -11,10 +11,10 @@ project:
 
 
 website:
-  title: "Industrial IoT"
+  title: "Industrial Internet of Things"
   reader-mode: true
   page-footer:
-    left: Industrial IoT 1 WiSe 2025 (MECH-M-4-IIoT)
+    left: Industrial Internet of Things WS 2026 (MECH-M-DUAL-3-IOT)
     center: "[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) Julian Huber"
     right: This book was built with <a href="https://quarto.org/">Quarto</a>.
   site-url: https://github.com/jhumci/MECH-M-3-IIoT

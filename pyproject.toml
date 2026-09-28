@@ -1,7 +1,7 @@
 [project]
 name = "MECH-M-3-IIoT"
 version = "0.1.0"
-description = "Industrial IoT (MECH-M-3-IIoT): Aufgabenstellung, Spezifikationen und Vorlagen"
+description = "Industrial Internet of Things (MECH-M-DUAL-3-IOT): Aufgabenstellung, Spezifikationen und Vorlagen"
 authors = [
     {name = "jhumci", email = "julian.huber@mci.edu"},
     {name = "Christoph Egger"},

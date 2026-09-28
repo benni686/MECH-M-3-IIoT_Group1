@@ -1,6 +1,6 @@
-# Industrial IoT (MECH-M-3-IIoT)
+# Industrial Internet of Things (MECH-M-DUAL-3-IOT)
 
-Unterlagen, Aufgabenstellung und Vorlagen für die synchronen Termine 1–3 der Lehrveranstaltung Industrial IoT am MCI.
+Unterlagen, Aufgabenstellung und Vorlagen für die synchronen Termine 1–3 der Lehrveranstaltung Industrial Internet of Things am MCI (WS 2026).
 
 **Website:** https://jhumci.github.io/MECH-M-3-IIoT/
 

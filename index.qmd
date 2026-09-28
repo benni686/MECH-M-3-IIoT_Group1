@@ -1,6 +1,6 @@
 # Einleitung
 
-Herzlich willkommen zur Lehrveranstaltung __Industrial IoT__! Die folgenden Unterlagen beziehen sich auf die ersten drei synchronen Termine der Vorlesung, welche von Christoph Egger durchgeführt und bewertet werden.
+Herzlich willkommen zur Lehrveranstaltung __Industrial Internet of Things__! Die folgenden Unterlagen beziehen sich auf die ersten drei synchronen Termine der Vorlesung, welche von Christoph Egger durchgeführt und bewertet werden.
 
 Im Rahmen dieser Abgabe erweitern Sie Ihr Verständnis für die Kernkonzepte des Industrial IoT, insbesondere die Erfassung, Übertragung, Speicherung und Analyse von Sensordaten in Echtzeit sowie deren Verschlüsselung und den Umgang mit Konfigurationsdaten.
 
