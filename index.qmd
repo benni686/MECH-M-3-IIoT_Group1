@@ -6,9 +6,9 @@ Im Rahmen dieser Abgabe erweitern Sie Ihr Verständnis für die Kernkonzepte des
 
 Im ersten Teil der Vorlesung von Christoph Egger, werden wir Grundkonzepte und Technologien des IIoT behandeln und mit einem Mikrocontroller (z.B. Raspberry Pi Pico W) kennenlernen. Im zweiten Teil der Vorlesung von Thomas Konecny, werden die Themen aufgegriffen und mit modernen Operational-Technologien (Beckhoff SPS, AWS-Cloud) vertieft.
 
-::: {.callout-warning}
-## Wichtig
-Dies ist der erste Durchlauf der Vorlesung. Entsprechend muss sich die Feinabstimmung der Aufgabenstellung und Inhalte noch entwickeln. Feedback und Anregungen sind jederzeit willkommen. Gerne mündlich oder direkt über das GitHub Repository.
+::: {.callout-note}
+## Feedback
+Feedback und Anregungen sind jederzeit willkommen – gerne mündlich oder direkt über das GitHub Repository.
 :::
 
 ## Zusammenarbeit
