@@ -16,7 +16,7 @@
 - [ ] Gehen Sie davon aus, dass die an allen Standorten Zugriff auf ein WLan haben, welches durch eine externe Firewall geschützt ist (Whitelist). Schreiben Sie ein kurzen Absatz für Ihre Dokumentation, worauf die örtliche IT-Abteilung achten muss, wenn sie ihre Geräte in das Netzwerk integrieren damit die Daten auch wirklich beim MQTT-Broker ankommen. Diskutieren Sie auch, wie sie die HTTP-API aus der Ferne zugänglich machen können und welche Gefahren und Hindernisse bestehen.
 
 
-# Assynchrone Inhalte
+# Asynchrone Inhalte
 
 Mit folgenden Inhalten sollten Sie sich vertraut machen, um die Aufgabenstellung erfolgreich zu bearbeiten:
 - [HTTP Status Codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status): Eine Übersicht über die verschiedenen HTTP-Statuscodes und deren Bedeutung.

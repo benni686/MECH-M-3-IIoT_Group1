@@ -1,11 +1,12 @@
 [project]
 name = "MECH-M-3-IIoT"
 version = "0.1.0"
-description = "Default template for PDM package"
+description = "Industrial IoT (MECH-M-3-IIoT): Aufgabenstellung, Spezifikationen und Vorlagen"
 authors = [
     {name = "jhumci", email = "julian.huber@mci.edu"},
+    {name = "Christoph Egger"},
 ]
-dependencies = ["quarto>=0.1.0"]
+dependencies = ["quarto-cli>=1.5"]
 requires-python = "==3.12.*"
 readme = "README.md"
 license = {text = "MIT"}

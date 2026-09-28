@@ -8,3 +8,5 @@ _site/
 # PlatformIO / Zugangsdaten
 .pio/
 .env
+
+**/*.quarto_ipynb

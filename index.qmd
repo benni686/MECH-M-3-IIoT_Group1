@@ -13,7 +13,7 @@ Dies ist der erste Durchlauf der Vorlesung. Entsprechend muss sich die Feinabsti
 
 ## Zusammenarbeit
 Die Kommunikation findet über das gemeinsam genutzte [Repository](https://github.com/jhumci/MECH-M-3-IIoT) statt. Im Wiki sind alle relevanten Informationen zu Hintergrund, Aufgabenstellung und Anforderungen zu finden.
-Für die assynchrone Kommunikation mit der Lehrveranstaltungsleitung sollen *Issues* und *Pull Requests* im GitHub Repository genutzt werden. Die Abgabe erfolgt über den Link zu einem Fork des Original-Repositories.
+Für die asynchrone Kommunikation mit der Lehrveranstaltungsleitung sollen *Issues* und *Pull Requests* im GitHub Repository genutzt werden. Die Abgabe erfolgt über den Link zu einem Fork des Original-Repositories.
 
 ## Einsatz von Generativer KI
 Es wird davon ausgegangen, dass sowohl in der Wissensermittlung als auch in der Umsetzung generative KI-Tools (z.B. ChatGPT, GitHub Copilot) eingesetzt werden. Dies ist ausdrücklich erlaubt und wird nicht negativ bewertet.
@@ -54,11 +54,11 @@ Die Bewertung der beiden Teile von IIoT erfolgt unabhängig voneinander. Die Not
 
 
 ## Storyline
-Sie sind Teil eines Teams, das eine IoT-Lösung für die Überwachung von Umwelungsbedingungen in einer Produktionsanlage entwickelt. Ihre Aufgabe ist es, eine Lösung zu entwerfen und zu implementieren, die Sensordaten erfasst, diese sicher überträgt und in Echtzeit analysiert, um Anomalien zu erkennen und Berichte zu generieren.
+Sie sind Teil eines Teams, das eine IoT-Lösung für die Überwachung von Umgebungsbedingungen in einer Produktionsanlage entwickelt. Ihre Aufgabe ist es, eine Lösung zu entwerfen und zu implementieren, die Sensordaten erfasst, diese sicher überträgt und in Echtzeit analysiert, um Anomalien zu erkennen und Berichte zu generieren.
 
 <iframe width="800" height="320" src="https://www.youtube.com/embed/e9Jyv7h8mo0" title="MCI | Teaching Factory | Side by side" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-Der Frühstücksflockenhersteller yourmuesli.at stellt an vielen Produktionsstandorten Mülsi-Mischungen her. Der Abflüssprozess wird stark durch Umweltparameter, wie Temperatur und Luftfeuchtigkeit beeinflusst. Um die Qualität der Produkte sicherzustellen, ist eine kontinuierliche Überwachung dieser Parameter erforderlich. Bisher wurde dies stark vernachlässigt. Zunehmende Probleme, wie nicht mehr knusprige Conflakes, geschmolzene Schokolade und andere Qualitätsmängel, sind aufgetreten. Es braucht keine Natural Language Processing und keine Sentiment-Analyse um die negativen Kundenbewertungen zu erkennen:
+Der Frühstücksflockenhersteller yourmuesli.at stellt an vielen Produktionsstandorten Müsli-Mischungen her. Der Abfüllprozess wird stark durch Umweltparameter, wie Temperatur und Luftfeuchtigkeit beeinflusst. Um die Qualität der Produkte sicherzustellen, ist eine kontinuierliche Überwachung dieser Parameter erforderlich. Bisher wurde dies stark vernachlässigt. Zunehmende Probleme, wie nicht mehr knusprige Cornflakes, geschmolzene Schokolade und andere Qualitätsmängel, sind aufgetreten. Es braucht keine Natural Language Processing und keine Sentiment-Analyse um die negativen Kundenbewertungen zu erkennen:
 
 > „@yourmuesli_at, sogts amoi: Solln die Haferflockn im Müsli wirklich so latschert sein wia a Regentog in Innsbruck? 🤨 Und die Schoko pickt zsamm wia a Lawinabrettl. So schmeckt des nit, gell! #MüsliFail“
 
@@ -68,7 +68,7 @@ Der Frühstücksflockenhersteller yourmuesli.at stellt an vielen Produktionsstan
 
 Das Management hat beschlossen, dass eine schnelle Reaktion erforderlich ist. Bis zum __30.11.2025__ möchte der Leiter der Qualitätssicherung Bruno Mircevski die Temperaturwerte aller Produktionsstandorts weltweit auf einem Dashboard auf seinem iPhone sehen.
 
-Da die [_Beckhoff EL3204_](https://www.beckhoff.com/de-at/produkte/i-o/ethercat-klemmen/el3xxx-analog-eingang/el3204.html) zur Zeit eine Lieferzeit von wenigen Wochen haben, kommt es nicht in Frage die bestehende Hardware zu erweitern. Sie und Ihr Team müssen daher eine alternative Lösung entwickeln, welche schnell umsetzbar, kostengünstig und vor allem einfach weltweit zu implementieren und zu warten ist. Das bedeutet, dass sie die Lösungen zentral von Innsbruck aus entwickeln und die Hardware versenden können. Vor Ort, soll die Hardware möglichst einfach an die Produktionsanlagen angeschlossen und ggf. konfiguriert werden können. Das soll anhand einer einfachen Doku auch für technisch nicht sehr versierte Nutzer:innen möglich sein. Zudem sollen Sie auch auf die Ferne dazu in der Lange sein, den Zustand der Sensoren zu überwachen und wenn nötig Einstellungen zu ändern.
+Da die [_Beckhoff EL3204_](https://www.beckhoff.com/de-at/produkte/i-o/ethercat-klemmen/el3xxx-analog-eingang/el3204.html) zur Zeit eine Lieferzeit von wenigen Wochen haben, kommt es nicht in Frage die bestehende Hardware zu erweitern. Sie und Ihr Team müssen daher eine alternative Lösung entwickeln, welche schnell umsetzbar, kostengünstig und vor allem einfach weltweit zu implementieren und zu warten ist. Das bedeutet, dass sie die Lösungen zentral von Innsbruck aus entwickeln und die Hardware versenden können. Vor Ort, soll die Hardware möglichst einfach an die Produktionsanlagen angeschlossen und ggf. konfiguriert werden können. Das soll anhand einer einfachen Doku auch für technisch nicht sehr versierte Nutzer:innen möglich sein. Zudem sollen Sie auch auf die Ferne dazu in der Lage sein, den Zustand der Sensoren zu überwachen und wenn nötig Einstellungen zu ändern.
 
 ::: {.callout collapse="true"}
 # Aufgabenstellung

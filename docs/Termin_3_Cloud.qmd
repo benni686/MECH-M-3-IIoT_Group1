@@ -12,11 +12,11 @@
 - [ ] Neben der Visualisierung der Zeitreihen-Daten, soll die Lösung auch eine übersicht über die verbundenen Sensoren bieten (z.B. Anzahl der Sensoren, letzte Verbindung, etc.).
 - [ ] Bearbeiten sie die Dokumentation so auf, dass ein Nutzer die Anpassung der Config den Mikrocontroller in ein bestehendes WLAN einbinden kann und die kontainersierte Lösung starten und nutzen kann.
 
-# Assynchrone Inhalte
+# Asynchrone Inhalte
 
 Mit folgenden Inhalten sollten Sie sich vertraut machen, um die Aufgabenstellung erfolgreich zu bearbeiten:
 
-- [DuckDB](https://duckdb.org/): Leichtgewichtige Datenbank für Zeitreihenhaden
+- [DuckDB](https://duckdb.org/): Leichtgewichtige Datenbank für Zeitreihendaten
 - [InfluxDB](https://www.influxdata.com/products/influxdb-overview/): Zeitseriendatenbank
     - [telegraf](https://www.influxdata.com/time-series-platform/telegraf/): Vermittlung zwischen MQTT und InfluxDB
     - [Grafana](https://grafana.com/): Visualisierung von Zeitseriendaten
