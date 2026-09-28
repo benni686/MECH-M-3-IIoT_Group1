@@ -6,11 +6,29 @@
 
 ## Vorstellung der Aufgabenstellung
 
-- [ ] Sie bereiten eine containerisierte Lösung vor, die sowohl eine Datenbank (z.B. InfluxDB, SQLite, Arrow etc.) als auch eine Visualisierungskomponente (z.B. Grafana, etc.) beinhaltet. Bei der Auswahl der Technologien sind Sie frei, achten Sie jedoch darauf, dass die Lösung ressourcenschonend ist und auf einem typischen Laptop ausgeführt werden kann.
-- [ ] Die Lösung soll so gestaltet sein, dass sie mit minimalen Aufwand gestartet werden kann (z.B. über ein `docker-compose.yml` Datei).
-- [ ] Die Lösung soll die Daten aller verbundenen Sensoren speichern und auch offen für zukünftige Sensoren sein und diese ohne zusätzlichen Konfigurationsaufwand integrieren.
-- [ ] Neben der Visualisierung der Zeitreihen-Daten, soll die Lösung auch eine übersicht über die verbundenen Sensoren bieten (z.B. Anzahl der Sensoren, letzte Verbindung, etc.).
-- [ ] Bearbeiten sie die Dokumentation so auf, dass ein Nutzer die Anpassung der Config den Mikrocontroller in ein bestehendes WLAN einbinden kann und die kontainersierte Lösung starten und nutzen kann.
+Sie bereiten eine containerisierte Lösung vor, die eine Datenhaltung (z.B. InfluxDB, SQLite, DuckDB, CSV) und eine Visualisierungskomponente (z.B. Grafana) beinhaltet. Bei der Auswahl der Technologien sind Sie frei, achten Sie jedoch darauf, dass die Lösung ressourcenschonend ist und auf einem typischen Laptop ausgeführt werden kann.
+
+### Voraussetzungen (für jede Bewertungsstufe)
+
+- [ ] Die Lösung lässt sich mit minimalem Aufwand starten, z.B. mit `docker compose up` über eine `docker-compose.yml`.
+- [ ] Die Dokumentation ist so aufbereitet, dass ein Nutzer den Mikrocontroller über die Konfiguration in ein bestehendes WLAN einbinden sowie die containerisierte Lösung starten und nutzen kann.
+
+### Bewertungsstufen
+
+Die Stufen bauen aufeinander auf:
+
+| Bewertung | Anforderung |
+|---|---|
+| *genügend* | Die Live-Daten Ihres Sensors werden vom MQTT-Broker gelesen, gespeichert (eine CSV-Datei reicht) und visualisiert. |
+| *befriedigend* | Die Daten werden in einer echten Datenbank gespeichert (z.B. InfluxDB, SQLite, DuckDB) statt in einer CSV-Datei. |
+| *gut* | Neue Sensoren werden ohne zusätzlichen Konfigurationsaufwand automatisch aufgenommen, z.B. die Daten aller Gruppen über das Topic `iiot/group/+/sensor/temperature/state`. |
+| *sehr gut* | Neben den Zeitreihen bietet die Lösung eine Übersicht über die verbundenen Sensoren (z.B. Anzahl der Sensoren, letzte Verbindung, Status aus dem Topic `iiot/group/+/status`). |
+
+**Bonus:** Zusätzliche Kennzahlen wie Mittelwert, Minimum und Maximum werden positiv berücksichtigt und können Schwächen in anderen Bereichen ausgleichen.
+
+::: {.callout-note}
+Die Bewertungsstufen beziehen sich auf den Implementierungsumfang. Codequalität, Integration der Komponenten und Dokumentation fließen wie in den [Bewertungskriterien](../index.qmd#bewertungskriterien) beschrieben zusätzlich in die Bewertung ein.
+:::
 
 # Asynchrone Inhalte
 
