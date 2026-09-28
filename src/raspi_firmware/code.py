@@ -119,7 +119,7 @@ class Sensor:
         """
         Initialisiert den Sensor am angegebenen GPIO-Pin.
 
-        :param pin_number: Die Nummer des GPIO-Pins (z.B. 15 für GP15).
+        :param pin_number: Die Nummer des GPIO-Pins (z.B. 22 für GP22).
         """
         pass
 

@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 560" font-family="Helvetica, Arial, sans-serif">
+  <title>Verdrahtung Raspberry Pi Pico W mit DHT11 und 10 kΩ Pull-up-Widerstand</title>
+  <rect width="840" height="560" fill="#ffffff"/>
+
+  <!-- ===================== Raspberry Pi Pico W ===================== -->
+  <rect x="150" y="42" width="44" height="26" rx="3" fill="#b8bcc2" stroke="#8a8f96"/>
+  <text x="172" y="34" font-size="11" fill="#555" text-anchor="middle">USB</text>
+  <rect x="60" y="60" width="210" height="440" rx="8" fill="#1f7a4d" stroke="#145436" stroke-width="2"/>
+  <rect x="128" y="250" width="54" height="54" rx="3" fill="#222"/>
+  <text x="155" y="340" font-size="13" fill="#ffffff" text-anchor="middle" font-weight="bold">Raspberry Pi</text>
+  <text x="155" y="357" font-size="13" fill="#ffffff" text-anchor="middle" font-weight="bold">Pico W</text>
+
+  <!-- Linke Pinreihe (Pin 1–20), nicht benutzt -->
+  <g fill="#d9c27a" stroke="#8c7a3a">
+    <circle cx="68" cy="80" r="5"/><circle cx="68" cy="101" r="5"/><circle cx="68" cy="122" r="5"/><circle cx="68" cy="143" r="5"/>
+    <circle cx="68" cy="164" r="5"/><circle cx="68" cy="185" r="5"/><circle cx="68" cy="206" r="5"/><circle cx="68" cy="227" r="5"/>
+    <circle cx="68" cy="248" r="5"/><circle cx="68" cy="269" r="5"/><circle cx="68" cy="290" r="5"/><circle cx="68" cy="311" r="5"/>
+    <circle cx="68" cy="332" r="5"/><circle cx="68" cy="353" r="5"/><circle cx="68" cy="374" r="5"/><circle cx="68" cy="395" r="5"/>
+    <circle cx="68" cy="416" r="5"/><circle cx="68" cy="437" r="5"/><circle cx="68" cy="458" r="5"/><circle cx="68" cy="479" r="5"/>
+  </g>
+  <text x="80" y="84" font-size="10" fill="#ffffff">1</text>
+
+  <!-- Rechte Pinreihe (Pin 40 oben bis Pin 21 unten) -->
+  <g fill="#d9c27a" stroke="#8c7a3a">
+    <circle cx="262" cy="80" r="5"/><circle cx="262" cy="101" r="5"/><circle cx="262" cy="122" r="5"/><circle cx="262" cy="143" r="5"/>
+    <circle cx="262" cy="164" r="6" fill="#ffd54a" stroke="#d62828" stroke-width="2"/>
+    <circle cx="262" cy="185" r="5"/><circle cx="262" cy="206" r="5"/><circle cx="262" cy="227" r="5"/><circle cx="262" cy="248" r="5"/>
+    <circle cx="262" cy="269" r="5"/><circle cx="262" cy="290" r="5"/>
+    <circle cx="262" cy="311" r="6" fill="#ffd54a" stroke="#e0a800" stroke-width="2"/>
+    <circle cx="262" cy="332" r="6" fill="#ffd54a" stroke="#222" stroke-width="2"/>
+    <circle cx="262" cy="353" r="5"/><circle cx="262" cy="374" r="5"/><circle cx="262" cy="395" r="5"/><circle cx="262" cy="416" r="5"/>
+    <circle cx="262" cy="437" r="5"/><circle cx="262" cy="458" r="5"/><circle cx="262" cy="479" r="5"/>
+  </g>
+  <g font-size="10" fill="#cfe8da" text-anchor="end">
+    <text x="252" y="84">40 VBUS</text>
+    <text x="252" y="105">39 VSYS</text>
+    <text x="252" y="126">38 GND</text>
+    <text x="252" y="147">37 3V3_EN</text>
+    <text x="252" y="168" fill="#ffffff" font-weight="bold" font-size="11">36 3V3(OUT)</text>
+    <text x="252" y="189">35 ADC_VREF</text>
+    <text x="252" y="210">34 GP28</text>
+    <text x="252" y="231">33 GND</text>
+    <text x="252" y="252">32 GP27</text>
+    <text x="252" y="273">31 GP26</text>
+    <text x="252" y="294">30 RUN</text>
+    <text x="252" y="315" fill="#ffffff" font-weight="bold" font-size="11">29 GP22</text>
+    <text x="252" y="336" fill="#ffffff" font-weight="bold" font-size="11">28 GND</text>
+    <text x="252" y="357">27 GP21</text>
+    <text x="252" y="378">26 GP20</text>
+    <text x="252" y="399">25 GP19</text>
+    <text x="252" y="420">24 GP18</text>
+    <text x="252" y="441">23 GND</text>
+    <text x="252" y="462">22 GP17</text>
+    <text x="252" y="483">21 GP16</text>
+  </g>
+
+  <!-- ===================== Steckbrett (Ausschnitt) ===================== -->
+  <rect x="440" y="130" width="360" height="250" rx="6" fill="#efeae0" stroke="#c9c1ae" stroke-width="2"/>
+  <text x="450" y="150" font-size="11" fill="#6b6455">Steckbrett (Ausschnitt)</text>
+
+  <!-- Verbundene 5er-Reihen hervorheben -->
+  <rect x="455" y="188" width="190" height="24" rx="12" fill="#d62828" fill-opacity="0.12"/>
+  <rect x="455" y="228" width="190" height="24" rx="12" fill="#e0a800" fill-opacity="0.18"/>
+  <rect x="455" y="308" width="190" height="24" rx="12" fill="#222222" fill-opacity="0.10"/>
+
+  <!-- Spaltenbeschriftung a–e -->
+  <g font-size="10" fill="#6b6455" text-anchor="middle">
+    <text x="470" y="176">a</text><text x="510" y="176">b</text><text x="550" y="176">c</text><text x="590" y="176">d</text><text x="630" y="176">e</text>
+  </g>
+  <!-- Reihennummern -->
+  <g font-size="10" fill="#6b6455" text-anchor="end">
+    <text x="458" y="191">1</text><text x="458" y="231">2</text><text x="458" y="271">3</text><text x="458" y="311">4</text><text x="458" y="351">5</text>
+  </g>
+
+  <!-- Löcher: 5 Reihen x 5 Spalten -->
+  <g fill="#5b5548">
+    <rect x="466" y="196" width="8" height="8" rx="1"/><rect x="506" y="196" width="8" height="8" rx="1"/><rect x="546" y="196" width="8" height="8" rx="1"/><rect x="586" y="196" width="8" height="8" rx="1"/><rect x="626" y="196" width="8" height="8" rx="1"/>
+    <rect x="466" y="236" width="8" height="8" rx="1"/><rect x="506" y="236" width="8" height="8" rx="1"/><rect x="546" y="236" width="8" height="8" rx="1"/><rect x="586" y="236" width="8" height="8" rx="1"/><rect x="626" y="236" width="8" height="8" rx="1"/>
+    <rect x="466" y="276" width="8" height="8" rx="1"/><rect x="506" y="276" width="8" height="8" rx="1"/><rect x="546" y="276" width="8" height="8" rx="1"/><rect x="586" y="276" width="8" height="8" rx="1"/><rect x="626" y="276" width="8" height="8" rx="1"/>
+    <rect x="466" y="316" width="8" height="8" rx="1"/><rect x="506" y="316" width="8" height="8" rx="1"/><rect x="546" y="316" width="8" height="8" rx="1"/><rect x="586" y="316" width="8" height="8" rx="1"/><rect x="626" y="316" width="8" height="8" rx="1"/>
+    <rect x="466" y="356" width="8" height="8" rx="1"/><rect x="506" y="356" width="8" height="8" rx="1"/><rect x="546" y="356" width="8" height="8" rx="1"/><rect x="586" y="356" width="8" height="8" rx="1"/><rect x="626" y="356" width="8" height="8" rx="1"/>
+  </g>
+
+  <!-- ===================== DHT11 ===================== -->
+  <!-- Beinchen in Spalte e -->
+  <g stroke="#9aa0a6" stroke-width="3" stroke-linecap="round">
+    <line x1="630" y1="200" x2="680" y2="200"/>
+    <line x1="630" y1="240" x2="680" y2="240"/>
+    <line x1="630" y1="280" x2="680" y2="280"/>
+    <line x1="630" y1="320" x2="680" y2="320"/>
+  </g>
+  <rect x="680" y="176" width="90" height="168" rx="4" fill="#2f6fc9" stroke="#1d4f95" stroke-width="2"/>
+  <g stroke="#1d4f95" stroke-width="1" opacity="0.6">
+    <line x1="730" y1="186" x2="730" y2="334"/><line x1="742" y1="186" x2="742" y2="334"/><line x1="754" y1="186" x2="754" y2="334"/>
+  </g>
+  <g font-size="11" fill="#ffffff">
+    <text x="686" y="204">1 VCC</text>
+    <text x="686" y="244">2 DATA</text>
+    <text x="686" y="284">3 NC</text>
+    <text x="686" y="324">4 GND</text>
+  </g>
+  <text x="725" y="366" font-size="13" fill="#1d4f95" text-anchor="middle" font-weight="bold">DHT11</text>
+
+  <!-- ===================== 10 kΩ Pull-up zwischen Reihe 1 (VCC) und Reihe 2 (DATA) ===================== -->
+  <g>
+    <line x1="590" y1="200" x2="590" y2="240" stroke="#9aa0a6" stroke-width="2.5"/>
+    <rect x="582" y="206" width="16" height="28" rx="5" fill="#e8d3a8" stroke="#a88a55"/>
+    <rect x="582" y="210" width="16" height="3" fill="#7a4a1e"/>
+    <rect x="582" y="216" width="16" height="3" fill="#111111"/>
+    <rect x="582" y="222" width="16" height="3" fill="#f28c28"/>
+    <rect x="582" y="228" width="16" height="3" fill="#c9a227"/>
+  </g>
+  <text x="566" y="226" font-size="11" fill="#333" text-anchor="end" font-weight="bold">10 kΩ</text>
+
+  <!-- ===================== Kabel ===================== -->
+  <g fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M262 164 H360 V200 H470" stroke="#d62828"/>
+    <path d="M262 311 H380 V240 H470" stroke="#e0a800"/>
+    <path d="M262 332 H400 V320 H470" stroke="#222222"/>
+  </g>
+  <g fill="#ffffff" stroke-width="2">
+    <circle cx="470" cy="200" r="4" stroke="#d62828"/>
+    <circle cx="470" cy="240" r="4" stroke="#e0a800"/>
+    <circle cx="470" cy="320" r="4" stroke="#222222"/>
+  </g>
+
+  <!-- ===================== Legende ===================== -->
+  <g font-size="12" fill="#333">
+    <line x1="440" y1="420" x2="470" y2="420" stroke="#d62828" stroke-width="4" stroke-linecap="round"/>
+    <text x="480" y="424">3,3 V: Pin 36 → Reihe 1 (DHT11 Pin 1 VCC)</text>
+    <line x1="440" y1="446" x2="470" y2="446" stroke="#e0a800" stroke-width="4" stroke-linecap="round"/>
+    <text x="480" y="450">Daten: Pin 29 (GP22) → Reihe 2 (DHT11 Pin 2 DATA)</text>
+    <line x1="440" y1="472" x2="470" y2="472" stroke="#222222" stroke-width="4" stroke-linecap="round"/>
+    <text x="480" y="476">Masse: Pin 28 (GND) → Reihe 4 (DHT11 Pin 4 GND)</text>
+    <rect x="440" y="490" width="30" height="16" rx="8" fill="#e0a800" fill-opacity="0.18"/>
+    <text x="480" y="503">Die 5 Löcher einer Reihe (a–e) sind leitend verbunden</text>
+  </g>
+</svg>
