@@ -4,6 +4,7 @@
 - Struktur: `iiot/group/{nachname1-nachname2-nachname3}/sensor/temperature/state`
 - Nur Kleinbuchstaben und `/` als Trenner
 - Beispiel: `iiot/group/mustermann-meier-schmidt/sensor/temperature/state`
+- Gerätestatus: `iiot/group/{nachname1-nachname2-nachname3}/status` (retained, Last Will = `offline`)
 
 ## Payload
 - Standardformat: JSON

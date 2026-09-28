@@ -138,7 +138,8 @@ class MqttClient:
     def connect(self):
         """
         Verbindet sich mit dem MQTT-Broker und setzt eine "Last Will and Testament"
-        Nachricht, die gesendet wird, falls das Gerät unerwartet die Verbindung verliert.
+        Nachricht mit dem Status "offline", die der Broker sendet, falls das Gerät
+        unerwartet die Verbindung verliert.
         """
         pass
 
@@ -153,10 +154,10 @@ class MqttClient:
 
     def publish_status(self, status: str):
         """
-        Sendet eine einfache Statusnachricht (z.B. "online", "rebooting")
-        an das definierte Status-Topic.
+        Sendet eine einfache Statusnachricht an das definierte Status-Topic.
+        Erlaubte Werte laut docs/iot-specs/conventions.md: "ok", "error", "offline".
 
-        :param status: Die zu sendende Statusnachricht.
+        :param status: Die zu sendende Statusnachricht ("ok", "error" oder "offline").
         """
         pass
 
@@ -227,7 +228,7 @@ class WebServer:
 
 # 2. VERBINDUNGSAUFBAU
 #    - Mit dem MqttClient zum Broker verbinden.
-#    - Eine "online"-Statusnachricht senden.
+#    - Eine "ok"-Statusnachricht senden.
 #    - Status-LED auf "dauerhaft an" setzen, um Betriebsbereitschaft zu signalisieren.
 
 # 3. HAUPTSCHLEIFE (Endlosschleife)
@@ -242,6 +243,7 @@ class WebServer:
 #               - Telemetrie über den MqttClient veröffentlichen.
 #            c. WENN Daten ungültig sind:
 #               - Fehler loggen oder anzeigen (z.B. durch Blinken der LED).
+#               - Eine "error"-Statusnachricht senden.
 #
 #        - Fehlerbehandlung für getrennte WLAN- oder MQTT-Verbindungen implementieren
 #          und versuchen, die Verbindung wiederherzustellen.

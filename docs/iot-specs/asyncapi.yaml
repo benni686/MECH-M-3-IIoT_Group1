@@ -1,37 +1,76 @@
 asyncapi: 2.6.0
 info:
   title: Building IoT Sensors
-  version: '1.0.0'
+  version: '1.1.0'
   description: |
     AsyncAPI-Spezifikation für Gebäudesensoren.
     Dieses Beispiel zeigt einen Temperatur-Sensor in einem Raum.
 
+defaultContentType: application/json
+
 servers:
   mqttBroker:
-    url: mqtt://158.180.44.197
-    port: 1883
+    url: 158.180.44.197:1883
     protocol: mqtt
+    protocolVersion: '5'
+    description: Privater Kurs-Broker (unverschlüsselt, Zugangsdaten siehe conventions.md)
 
 channels:
-  iiot/group/{nachname1-nachname2-nachname3}/sensor/temperature/state:
+  iiot/group/{group}/sensor/temperature/state:
     description: |
       Publiziert Temperaturmessungen einer Gruppe
     parameters:
       group:
-        description: Nachnamen aller Gruppenmitglieder
-        schema:
-          type: string
+        $ref: '#/components/parameters/group'
     publish:
       operationId: publishTemperature
       summary: Sendet Temperaturdaten
       message:
+        messageId: temperatureMessage
         name: TemperatureMessage
         title: Temperatur-Daten
         payload:
           $ref: '#/components/schemas/TemperatureReading'
 
+  iiot/group/{group}/status:
+    description: |
+      Status des Geräts einer Gruppe. Nach dem Verbindungsaufbau wird "ok" gesendet,
+      bei Fehlern (z.B. ungültige Sensordaten) "error". Als Last Will and Testament
+      wird "offline" hinterlegt, das der Broker bei unerwartetem Verbindungsabbruch sendet.
+      Nachrichten werden retained gesendet, damit neue Subscriber den letzten Status sehen.
+    parameters:
+      group:
+        $ref: '#/components/parameters/group'
+    publish:
+      operationId: publishStatus
+      summary: Sendet den Gerätestatus
+      bindings:
+        mqtt:
+          qos: 1
+          retain: true
+      message:
+        messageId: statusMessage
+        name: StatusMessage
+        title: Geräte-Status
+        payload:
+          $ref: '#/components/schemas/DeviceStatus'
+
 components:
+  parameters:
+    group:
+      description: |
+        Nachnamen aller Gruppenmitglieder in Kleinbuchstaben, mit "-" getrennt
+        (nachname1-nachname2-nachname3), z.B. "mustermann-meier-schmidt"
+      schema:
+        type: string
+
   schemas:
+    Status:
+      type: string
+      description: Statuswerte laut conventions.md
+      enum: [ok, error, offline]
+      example: "ok"
+
     TemperatureReading:
       type: object
       required:
@@ -58,7 +97,23 @@ components:
           enum: [°C, K]
           example: "°C"
         status:
+          $ref: '#/components/schemas/Status'
+
+    DeviceStatus:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          $ref: '#/components/schemas/Status'
+        timestamp:
           type: string
-          description: Status der Messung
-          enum: [ok, error, offline]
-          example: "ok"
+          format: date-time
+          description: |
+            Zeitpunkt der Statusmeldung (ISO8601). Optional, da die "offline"-Nachricht
+            (Last Will) bereits beim Verbindungsaufbau festgelegt wird.
+          example: "2025-08-28T10:00:00Z"
+        sensor_id:
+          type: string
+          description: Eindeutige ID des Sensors aus der Konfiguration
+          example: "temp-101"

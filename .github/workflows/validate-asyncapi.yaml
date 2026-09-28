@@ -1,0 +1,22 @@
+name: Validate AsyncAPI Spec
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'docs/iot-specs/asyncapi.yaml'
+      - '.github/workflows/validate-asyncapi.yaml'
+  pull_request:
+    paths:
+      - 'docs/iot-specs/asyncapi.yaml'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install AsyncAPI CLI
+        run: npm install -g @asyncapi/cli
+      - name: Validate asyncapi.yaml
+        run: asyncapi validate docs/iot-specs/asyncapi.yaml
