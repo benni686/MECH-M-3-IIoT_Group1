@@ -4,7 +4,8 @@
 
 // ----- Globale Definitionen -----
 // Diese Objekte werden von der Sensor-Klasse als 'extern' erwartet.
-WiFiClientSecure espClient;
+WiFiClient espClient;              // Unverschlüsselt (Port 1883)
+WiFiClientSecure espClientSecure;  // TLS (Port 8883)
 PubSubClient mqttClient(espClient);
 WebServer server(80);
 Preferences preferences;
@@ -12,7 +13,8 @@ Preferences preferences;
 // ----- Sensor-Instanz erstellen -----
 // Hier wird der Sensor konfiguriert.
 // Parameter: Ort, Beschreibung, true/false für sichere/unsichere MQTT-Verbindung
-MyTempSensor mySensor("Wohnzimmer", "Temperatur und Luftfeuchte", true);
+// Der Kurs-Broker läuft unverschlüsselt auf Port 1883 -> false
+MyTempSensor mySensor("Wohnzimmer", "Temperatur und Luftfeuchte", false);
 
 
 void setup() {
@@ -38,7 +40,7 @@ void loop() {
 // Alternativ könnte man eine Sensor.cpp-Datei erstellen.
 
 void Sensor::publishSensorData(float value) {
-    StaticJsonDocument<256> doc;
+    JsonDocument doc;
     doc["sensorId"] = sensorId;
     doc["sensorName"] = sensorName;
     doc["timestamp"] = millis();
@@ -53,7 +55,7 @@ void Sensor::publishSensorData(float value) {
 }
 
 void Sensor::publishMetadata() {
-    StaticJsonDocument<512> doc;
+    JsonDocument doc;
     doc["sensorId"] = sensorId;
     doc["sensorName"] = sensorName;
     doc["type"] = metadata.type;

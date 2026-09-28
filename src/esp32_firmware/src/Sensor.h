@@ -10,7 +10,8 @@
 #include "config_secure.h" // Inkludiert Zertifikat und Port-Definitionen
 
 // Globale Objekte, da sie von der Basisklasse genutzt werden
-extern WiFiClientSecure espClient;
+extern WiFiClient espClient;              // Unverschlüsselt (Port 1883)
+extern WiFiClientSecure espClientSecure;  // TLS (Port 8883)
 extern PubSubClient mqttClient;
 extern WebServer server;
 extern Preferences preferences;
@@ -74,10 +75,12 @@ public:
         // Logik für sichere vs. unsichere Verbindung
         if (useSecureConnection) {
             Serial.println("Setting up secure MQTTS connection.");
-            espClient.setCACert(MQTT_BROKER_CA_CERT); // Zertifikat aus config_secure.h
+            espClientSecure.setCACert(MQTT_BROKER_CA_CERT); // Zertifikat aus config_secure.h
+            mqttClient.setClient(espClientSecure);
             mqttClient.setServer(MQTT_BROKER_HOST, MQTT_SECURE_PORT); // Sicherer Port
         } else {
             Serial.println("Setting up insecure MQTT connection. NO CERTIFICATE WILL BE USED.");
+            mqttClient.setClient(espClient);
             mqttClient.setServer(MQTT_BROKER_HOST, MQTT_INSECURE_PORT); // Unsicherer Port
         }
         
@@ -87,7 +90,8 @@ public:
     void reconnectMqtt() {
         while (!mqttClient.connected()) {
             Serial.print("Attempting MQTT connection...");
-            if (mqttClient.connect(sensorId.c_str())) {
+            // MQTT_USER und MQTT_PASSWORD kommen aus platformio.ini (.env)
+            if (mqttClient.connect(sensorId.c_str(), MQTT_USER, MQTT_PASSWORD)) {
                 Serial.println("connected!");
                 publishMetadata();
             } else {

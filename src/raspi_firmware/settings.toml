@@ -25,14 +25,18 @@ wifi_password = "SehrGeheimesPasswort123"
 
 # --- MQTT Broker Einstellungen ---
 # Die Adresse des zentralen Servers (Broker), an den die Daten gesendet werden.
-broker_address = "broker.hivemq.com"
+broker_address = "158.180.44.197"
 broker_port = 1883
+mqtt_username = "bobm"
+# Passwort wird in der Vorlesung bekanntgegeben.
+mqtt_password = "In Vorlesung erfragen"
 
 # Topics sind wie "Kanäle", auf denen Nachrichten gesendet werden.
+# Struktur siehe docs/iot-specs/conventions.md
 # Das Haupt-Topic für die Sensordaten (Temperatur, Luftfeuchtigkeit).
-telemetry_topic = "yourmuesli/telemetry"
-# Das Topic für Statusmeldungen (z.B. "online", "rebooting").
-status_topic = "yourmuesli/status"
+telemetry_topic = "iiot/group/{nachname1-nachname2-nachname3}/sensor/temperature/state"
+# Das Topic für Statusmeldungen (z.B. "ok", "error", "offline").
+status_topic = "iiot/group/{nachname1-nachname2-nachname3}/status"
 
 
 # --- Sensor & Applikations-Einstellungen ---

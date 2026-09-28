@@ -21,8 +21,8 @@ const char* WIFI_PASSWORD = "Your_WiFi_Password";
 
 // ----- MQTT BROKER EINSTELLUNGEN -----
 // Tragen Sie hier die Daten Ihres MQTT-Brokers ein.
-const char* MQTT_BROKER_HOST = "your_mqtt_broker_host.com";
-const int   MQTT_BROKER_PORT = 8883; // Standardport für MQTTS (TLS-verschlüsselt)
+const char* MQTT_BROKER_HOST = "158.180.44.197";
+const int   MQTT_BROKER_PORT = 1883; // Kurs-Broker: unverschlüsselt (MQTTS mit TLS wäre 8883)
 const char* MQTT_CLIENT_ID_PREFIX = "ESP32_Sensor_"; // Präfix für die Client-ID
 
 

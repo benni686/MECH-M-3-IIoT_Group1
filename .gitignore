@@ -5,3 +5,6 @@ __pycache__/
 .pdm-python
 /.quarto/
 _site/
+# PlatformIO / Zugangsdaten
+.pio/
+.env

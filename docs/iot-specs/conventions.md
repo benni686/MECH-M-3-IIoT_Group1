@@ -13,6 +13,7 @@
 
 ## Endpunkt
 
+- Host: `158.180.44.197` (privater Kurs-Broker)
 - Port: 1883
 - Username: `bobm`
 - Password: In Vorlesung erfragen
