@@ -34,8 +34,13 @@
 - **POST**: Setzt neue Konfiguration.
 
 ### Beispiel `GET /config` Response
+Die Feldnamen entsprechen den Schlüsseln in `settings.toml`.
 ```json
 {
-  "sendInterval": 60,
-  "deviceName": "sensor-node-01"
+  "device_id": "yourmuesli-innsbruck-01",
+  "reading_interval_seconds": 60
 }
+```
+
+Weitere Felder sowie der Endpunkt `/status` werden in der Gesamtgruppe festgelegt
+und in `openapi.yaml` ergänzt.

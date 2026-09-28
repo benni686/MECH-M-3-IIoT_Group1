@@ -4,7 +4,8 @@ info:
   description: |
     REST-Schnittstelle des Microcontrollers zur Konfiguration.
     Hinweis: Kommunikation unverschlüsselt (HTTP).
-  version: 1.0.0
+    Die Feldnamen entsprechen den Schlüsseln in settings.toml.
+  version: 1.1.0
 servers:
   - url: http://192.168.0.100
     description: Beispiel-Microcontroller
@@ -20,12 +21,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  interval:
-                    type: integer
-                    description: Sendeintervall in Sekunden
-                    example: 60
+                $ref: '#/components/schemas/Config'
     post:
       summary: Konfiguration setzen
       description: Überschreibt die Konfiguration (z.B. neues Sendeintervall).
@@ -34,12 +30,23 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                interval:
-                  type: integer
-                  description: Neues Sendeintervall in Sekunden
-                  example: 120
+              $ref: '#/components/schemas/Config'
+            example:
+              reading_interval_seconds: 120
       responses:
         '200':
           description: Konfiguration erfolgreich gesetzt
+
+components:
+  schemas:
+    Config:
+      type: object
+      properties:
+        device_id:
+          type: string
+          description: Eindeutiger Name des Sensors (wird in den MQTT-Nachrichten verwendet)
+          example: "yourmuesli-innsbruck-01"
+        reading_interval_seconds:
+          type: integer
+          description: Sendeintervall in Sekunden
+          example: 60
