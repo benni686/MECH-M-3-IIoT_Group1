@@ -13,7 +13,7 @@ Dies ist der erste Durchlauf der Vorlesung. Entsprechend muss sich die Feinabsti
 
 ## Zusammenarbeit
 Die Kommunikation findet über das gemeinsam genutzte [Repository](https://github.com/jhumci/MECH-M-3-IIoT) statt. Im Wiki sind alle relevanten Informationen zu Hintergrund, Aufgabenstellung und Anforderungen zu finden.
-Für die asynchrone Kommunikation mit der Lehrveranstaltungsleitung sollen *Issues* und *Pull Requests* im GitHub Repository genutzt werden. Die Abgabe erfolgt über den Link zu einem Fork des Original-Repositories.
+Für die asynchrone Kommunikation mit der Lehrveranstaltungsleitung sollen *Issues* und *Pull Requests* im GitHub Repository genutzt werden. Die Abgabe erfolgt über den Link zu einem Fork des Original-Repositories, spätestens am **Freitag, 27.11.2026, 23:59 Uhr**.
 
 ## Einsatz von Generativer KI
 Es wird davon ausgegangen, dass sowohl in der Wissensermittlung als auch in der Umsetzung generative KI-Tools (z.B. ChatGPT, GitHub Copilot) eingesetzt werden. Dies ist ausdrücklich erlaubt und wird nicht negativ bewertet.
@@ -66,7 +66,7 @@ Der Frühstücksflockenhersteller yourmuesli.at stellt an vielen Produktionsstan
 
 > „@yourmuesli_at, die Portion is so kloan, do werd in Tirol grad amol a Spatzl satt. Mia brauchn a gscheids Müsli, nit a Vogelfutter!“
 
-Das Management hat beschlossen, dass eine schnelle Reaktion erforderlich ist. Bis zum __30.11.2025__ möchte der Leiter der Qualitätssicherung Bruno Mircevski die Temperaturwerte aller Produktionsstandorts weltweit auf einem Dashboard auf seinem iPhone sehen.
+Das Management hat beschlossen, dass eine schnelle Reaktion erforderlich ist. Bis zum __27.11.2026__ möchte der Leiter der Qualitätssicherung Bruno Mircevski die Temperaturwerte aller Produktionsstandorts weltweit auf einem Dashboard auf seinem iPhone sehen.
 
 Da die [_Beckhoff EL3204_](https://www.beckhoff.com/de-at/produkte/i-o/ethercat-klemmen/el3xxx-analog-eingang/el3204.html) zur Zeit eine Lieferzeit von wenigen Wochen haben, kommt es nicht in Frage die bestehende Hardware zu erweitern. Sie und Ihr Team müssen daher eine alternative Lösung entwickeln, welche schnell umsetzbar, kostengünstig und vor allem einfach weltweit zu implementieren und zu warten ist. Das bedeutet, dass sie die Lösungen zentral von Innsbruck aus entwickeln und die Hardware versenden können. Vor Ort, soll die Hardware möglichst einfach an die Produktionsanlagen angeschlossen und ggf. konfiguriert werden können. Das soll anhand einer einfachen Doku auch für technisch nicht sehr versierte Nutzer:innen möglich sein. Zudem sollen Sie auch auf die Ferne dazu in der Lage sein, den Zustand der Sensoren zu überwachen und wenn nötig Einstellungen zu ändern.
 
