@@ -29,5 +29,5 @@ Hier ist Platz für ihre Dokumentation. Dieses Dokument ist in [Quarto](https://
 - `docs/images`: Bilder für die Dokumentation
 - `src/esp32_firmware`: Quellcode mit Ansätzen für die Firmware-Entwicklung
 - `src/raspi_firmware`: Quellcode mit Ansätzen für die Firmware-Entwicklung
-- `src/cloud`: Quellcode mit Ansätzen für die Cloud-Entwicklung
-- `tests/`: Tests für den Quellcode
+- `src/cloud`: Ihre containerisierte Lösung aus Termin 3 (von Ihnen anzulegen)
+- `tests/`: Ihre Testfälle für die HTTP-API aus Termin 2 (von Ihnen anzulegen)

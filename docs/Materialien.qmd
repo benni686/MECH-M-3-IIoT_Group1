@@ -44,5 +44,6 @@ Zusätzlich: **10 kΩ-Widerstand** zwischen DHT11 Pin 1 (VCC) und Pin 2 (DATA).
 - **Steckbrett:** Die fünf Löcher einer Reihe (a–e) sind im Inneren leitend verbunden. Was in derselben Reihe steckt, ist also miteinander verbunden.
 - **DHT11 als Modul:** Manche DHT11 sind auf einer kleinen Platine mit nur drei Pins verbaut. Dort ist der Pull-up-Widerstand bereits eingebaut und die Pin-Reihenfolge ist aufgedruckt (z.B. `+`, `out`, `-`). Der zusätzliche Widerstand entfällt dann.
 - **ESP32:** Der Aufbau ist identisch (3V3, GND, Datenpin). Die ESP32-Vorlage nutzt GPIO 4 als Datenpin (`DHT_SENSOR_PIN` in `src/esp32_firmware/src/sensors/my_sensor.h`).
-- **Keine Messwerte?** Der DHT11 liefert höchstens alle 1–2 Sekunden einen neuen Wert. Häufiges Auslesen führt zu Fehlern.
+- **Keine Messwerte?** Der DHT11 liefert höchstens alle 1–2 Sekunden einen neuen Wert. Häufiges Auslesen führt zu Fehlern. Auch bei korrektem Aufbau schlägt gelegentlich eine Messung fehl (Checksum-Fehler), das ist normal und muss in der Firmware abgefangen werden.
+- **Zu warm?** Der Pico W erwärmt sich im Betrieb, vor allem durch das WLAN-Modul. Sitzt der DHT11 direkt daneben, zeigt er einige Grad zu viel an. Ein paar Zentimeter Abstand, z.B. am anderen Ende des Steckbretts, helfen.
 :::

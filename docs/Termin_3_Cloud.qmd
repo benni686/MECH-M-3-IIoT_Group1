@@ -30,6 +30,16 @@ Die Stufen bauen aufeinander auf:
 Die Bewertungsstufen beziehen sich auf den Implementierungsumfang. Codequalität, Integration der Komponenten und Dokumentation fließen wie in den [Bewertungskriterien](../index.qmd#bewertungskriterien) beschrieben zusätzlich in die Bewertung ein.
 :::
 
+### Einstieg
+
+Bevor Sie Container bauen, prüfen Sie, dass Sie die Daten überhaupt sehen. Der schnellste Weg ist ein Abonnement auf alle Sensor-Topics, mit denselben Zugangsdaten, die auch Ihr Gerät verwendet:
+
+```bash
+mosquitto_sub -h 158.180.44.197 -p 1883 -u bobm -P '<passwort>' -t 'iiot/group/+/sensor/#' -v
+```
+
+`mosquitto_sub` gehört zum [Mosquitto](https://mosquitto.org/download/)-Paket. Dasselbe erreichen Sie mit rund zehn Zeilen Python und der Bibliothek [`paho-mqtt`](https://pypi.org/project/paho-mqtt/). Dieses Skript ist zugleich der Kern Ihres ersten Containers: Es empfängt die Nachrichten und schreibt sie weg, zunächst in eine CSV-Datei. Die Datenbank und die Visualisierung kommen danach.
+
 # Asynchrone Inhalte
 
 Mit folgenden Inhalten sollten Sie sich vertraut machen, um die Aufgabenstellung erfolgreich zu bearbeiten:

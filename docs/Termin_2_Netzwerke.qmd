@@ -7,19 +7,71 @@
 ## Vorstellung der Aufgabenstellung
 
 - [ ] Die Netzwerkkonfiguration (z.B. WLAN-Zugangsdaten) wird über eine Konfig-Datei [`settings.toml`](https://github.com/jhumci/MECH-M-3-IIoT/blob/main/src/raspi_firmware/settings.toml) bereitgestellt, die der Microcontroller beim Start einliest.
-- [ ] Der Microcontroller hat zwei HTTP-Endpunkte (unverschlüsselt):
+- [ ] Der Microcontroller hat zwei HTTP-Endpunkte (unverschlüsselt), die JSON senden und empfangen:
   - `/config` (GET, POST): Zum Abrufen und Setzen der Konfiguration (z.B. Sendeintervall).
-  - `/status` (GET): Zum Abrufen des aktuellen Status des Geräts (z.B. letzte gesendeten Werte, Verbindungsstatus, Uptime).
-- [ ] Einigen sie sich in der Gesamtgruppe auf die HTTP-API, welche alle Sensoren unterstützen müssen und legen Sie alles fest **bis vor dem 3. Synchron-Termin**.
-- [ ] Die Schnittstellen sind in der OpenAPI Specification dokumentiert siehe [`openapi.yaml`](https://github.com/jhumci/MECH-M-3-IIoT/blob/main/docs/iot-specs/openapi.yaml) und [`conventions.md`](https://github.com/jhumci/MECH-M-3-IIoT/blob/main/docs/iot-specs/conventions.md).
-- [ ] Es stehen Testfälle zur Verfügung, um die Funktionalität der HTTP-API zu überprüfen. Ob Sie diese Testfälle mittels eines Test-Frameworks hat Auswirkung auf die Bewertung: (z.B. [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) in VSCode (*befriedigend*)), `unittest` in Python (*gut*),oder das OpenAPI-Tooling (z.B. [Swagger Codegen](https://swagger.io/tools/swagger-codegen/)) nutzen (*sehr gut*), bleibt Ihnen überlassen. Wie die Testfälle genutzt werden, sollte in der Dokumentation beschrieben sein.
-- [ ] Gehen Sie davon aus, dass die an allen Standorten Zugriff auf ein WLan haben, welches durch eine externe Firewall geschützt ist (Whitelist). Schreiben Sie ein kurzen Absatz für Ihre Dokumentation, worauf die örtliche IT-Abteilung achten muss, wenn sie ihre Geräte in das Netzwerk integrieren damit die Daten auch wirklich beim MQTT-Broker ankommen. Diskutieren Sie auch, wie sie die HTTP-API aus der Ferne zugänglich machen können und welche Gefahren und Hindernisse bestehen.
+  - `/status` (GET): Zum Abrufen des aktuellen Status des Geräts (z.B. letzte gesendete Werte, Verbindungsstatus, Uptime).
+- [ ] Die Schnittstellen sind in der OpenAPI Specification dokumentiert, siehe [`openapi.yaml`](https://github.com/jhumci/MECH-M-3-IIoT/blob/main/docs/iot-specs/openapi.yaml) und [`conventions.md`](https://github.com/jhumci/MECH-M-3-IIoT/blob/main/docs/iot-specs/conventions.md). Dort ist bisher nur `/config` beschrieben.
+- [ ] Einigen Sie sich in der Gesamtgruppe auf die Felder von `/status` und auf alle weiteren Felder von `/config`, die alle Sensoren unterstützen müssen, **bis vor dem 3. Synchron-Termin**. Vorgehen: Eine Gruppe stellt einen Pull Request gegen `docs/iot-specs/openapi.yaml` im Original-Repository mit einem Vorschlag. Die anderen Gruppen kommentieren dort. Was vor dem 3. Termin gemerged ist, gilt für alle.
+- [ ] Schreiben Sie Testfälle, mit denen sich die HTTP-API Ihres Geräts überprüfen lässt, und legen Sie diese im Repository ab (z.B. unter `tests/`). Welches Werkzeug Sie dafür verwenden, hat Auswirkung auf die Bewertung: [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) in VS Code (*befriedigend*), `unittest` oder `pytest` in Python (*gut*), oder das OpenAPI-Tooling, z.B. [Schemathesis](https://schemathesis.readthedocs.io/) oder [Swagger Codegen](https://swagger.io/tools/swagger-codegen/) (*sehr gut*). Wie die Testfälle ausgeführt werden, sollte in der Dokumentation beschrieben sein.
+- [ ] Gehen Sie davon aus, dass Sie an allen Standorten Zugriff auf ein WLAN haben, welches durch eine externe Firewall geschützt ist (Whitelist). Schreiben Sie einen kurzen Absatz für Ihre Dokumentation, worauf die örtliche IT-Abteilung achten muss, wenn sie Ihre Geräte in das Netzwerk integriert, damit die Daten auch wirklich beim MQTT-Broker ankommen. Diskutieren Sie auch, wie Sie die HTTP-API aus der Ferne zugänglich machen können und welche Gefahren und Hindernisse bestehen.
 
+### Vorgehen
+
+Bauen Sie die HTTP-Schnittstelle in dieser Reihenfolge auf und testen Sie jeden Schritt von Ihrem Laptop aus, bevor Sie den nächsten beginnen. Laptop und Pico müssen dazu im selben WLAN sein.
+
+1. **Ein fester Text auf `GET /`.** Der Server nimmt eine Verbindung an, liest die Anfrage, antwortet mit `HTTP/1.1 200 OK`, einer Leerzeile und einem beliebigen Text. Das prüfen Sie mit `curl`, das auf Windows, macOS und Linux vorinstalliert ist:
+
+   ```bash
+   curl -v http://<ip-des-pico>/
+   ```
+
+   Mit `-v` sehen Sie die komplette Anfrage und Antwort, auch die Statuszeile und die Header.
+2. **`GET /config` mit JSON.** Wert aus der geladenen Konfiguration nehmen, mit `json.dumps()` in einen String verwandeln, `Content-Type: application/json` setzen.
+3. **`POST /config`.** Den JSON-Body aus der Anfrage lesen, mit `json.loads()` parsen, Werte übernehmen. Test:
+
+   ```bash
+   curl -v -X POST http://<ip-des-pico>/config \
+        -H "Content-Type: application/json" \
+        -d '{"reading_interval_seconds": 10}'
+   ```
+
+   Danach `GET /config` erneut aufrufen: Der neue Wert muss zurückkommen, und der Sensor muss ab jetzt im neuen Intervall senden.
+4. **`GET /status`** nach dem Schema, das in der Gesamtgruppe vereinbart wurde.
+5. **Falsche Anfragen.** Unbekannter Pfad, falsche Methode, kaputtes JSON: Der Server antwortet mit dem passenden Statuscode (404, 405, 400) und läuft weiter, statt abzustürzen.
+6. **Testfälle** aus den `curl`-Aufrufen ableiten und im gewählten Werkzeug festhalten.
+
+Sie können den Server mit `socketpool` selbst schreiben oder die Bibliothek [`adafruit_httpserver`](https://docs.circuitpython.org/projects/httpserver/en/latest/) aus dem Bundle verwenden, die Routen, JSON-Antworten und Statuscodes bereits kennt. Beides ist zulässig. Der eigene Server ist lehrreicher, die Bibliothek nimmt Ihnen die unten beschriebenen Stolpersteine ab.
+
+### Hinweise zu den schwierigen Stellen
+
+- **Die Hauptschleife darf nie blockieren.** Ihr Programm bedient MQTT, den Sensor und den Webserver in einer einzigen Schleife. Wartet ein Teil, stehen alle anderen. Zwei typische Bremsen: `accept()` wartet standardmäßig, bis ein Browser anklopft (Stichwort `setblocking(False)`), und `loop()` von MiniMQTT wartet standardmäßig bis zu einer Sekunde auf eingehende Nachrichten (Stichwort: Parameter `timeout`, und wie oft der Aufruf wirklich nötig ist, wenn Sie nichts abonniert haben).
+- **Port 80 ist nach einem Neustart noch belegt.** Speichern Sie eine Datei, startet `code.py` neu, aber der alte Socket ist im WLAN-Modul noch nicht freigegeben. `bind()` schlägt dann mit `EADDRINUSE` fehl. Stichworte: `SO_REUSEADDR`, oder das Starten des Servers bei Fehler einige Sekunden später erneut versuchen, statt aufzugeben.
+- **Die Anfrage kommt nicht in einem Stück.** Ein `recv()` liefert nicht zwingend die ganze Anfrage. Der Header `Content-Length` sagt Ihnen, wie viele Bytes Body Sie noch erwarten müssen. Der Body beginnt nach der ersten Leerzeile (`\r\n\r\n`).
+- **Schreibschutz.** Solange der Pico per USB am Laptop hängt, darf CircuitPython nicht auf sein eigenes Laufwerk schreiben. Das Speichern der `settings.toml` aus `POST /config` scheitert dann mit einem `OSError`. Die Hinweise dazu stehen im Docstring von `ConfigManager.save_settings()` in der Vorlage. Für die Bewertung reicht es, wenn die neue Konfiguration im laufenden Betrieb übernommen wird und ein Fehler beim Speichern sauber gemeldet wird; das dauerhafte Speichern per `boot.py` ist ein Plus.
+- **Dienst aus dem Browser prüfen.** Ein Browser schickt bei jedem Aufruf zusätzlich `GET /favicon.ico`. Wenn Ihr Server darauf abstürzt, sehen Sie das nur in der seriellen Konsole.
+
+### Was die IT-Abteilung wissen muss
+
+Für den Absatz in der Dokumentation brauchen Sie die Fakten aus Ihrer eigenen Firmware. Notieren Sie, welche Verbindungen Ihr Gerät **ausgehend** aufbaut (Ziel, Port, Protokoll), z.B. zum Broker auf `158.180.44.197:1883` über TCP und, falls Sie NTP verwenden, zu einem Zeitserver über UDP 123. Notieren Sie außerdem, welche Verbindungen **eingehend** nötig sind (die HTTP-API auf Port 80, nur aus dem lokalen Netz). Daraus ergibt sich, was in der Whitelist stehen muss. Mit dem [Filius-Skript](https://jhumci.github.io/2024_SoSe_IoT1/IoT_5_Netzwerke_Aufgaben/) können Sie eine solche Firewall im Simulator nachbauen.
+
+::: {.callout-warning collapse="true"}
+## Typische Probleme
+- **`curl: (7) Connection refused`**: Der Server läuft nicht, z.B. weil `bind()` fehlgeschlagen ist. Serielle Konsole prüfen.
+- **`curl` hängt und läuft in einen Timeout**: Der Server nimmt die Verbindung an, antwortet aber nicht. Meist blockiert etwas in der Hauptschleife, oder die Antwort wird gesendet, bevor die Anfrage vollständig gelesen wurde.
+- **Antwort dauert über eine Sekunde**: Siehe *Die Hauptschleife darf nie blockieren*.
+- **Erste Anfrage geht, zweite nicht**: Die Client-Verbindung wird nach der Antwort nicht geschlossen, oder eine Exception im Handler beendet die Schleife.
+- **Laptop findet den Pico nicht**: Anderes WLAN, oder das WLAN trennt Clients voneinander (Gäste-Netz, Client-Isolation). Ein Handy-Hotspot ist die einfachste Umgebung zum Testen.
+:::
 
 # Asynchrone Inhalte
 
 Mit folgenden Inhalten sollten Sie sich vertraut machen, um die Aufgabenstellung erfolgreich zu bearbeiten:
+
 - [HTTP Status Codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status): Eine Übersicht über die verschiedenen HTTP-Statuscodes und deren Bedeutung.
+- [Aufbau einer HTTP-Nachricht](https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages): Statuszeile, Header, Leerzeile, Body. Genau das muss Ihr Server lesen und schreiben.
+- [Everything curl](https://everything.curl.dev/): Nachschlagewerk für `curl`. Für den Einstieg reichen die Kapitel zu `-v`, `-X` und `-d`.
 - [RESTful API Resource Naming](https://restfulapi.net/resource-naming/): Empfehlungen zur Benennung von Ressourcen in RESTful APIs.
+- [OpenAPI Specification](https://learn.openapis.org/): Einführung in das Format von `openapi.yaml`. Mit dem [Swagger Editor](https://editor.swagger.io/) können Sie die Datei prüfen und lesbar darstellen.
+- [`socketpool` in CircuitPython](https://docs.circuitpython.org/en/latest/shared-bindings/socketpool/index.html): Die Socket-API des Pico W, falls Sie den Server selbst schreiben.
+- [`adafruit_httpserver`](https://docs.circuitpython.org/projects/httpserver/en/latest/): Die Alternative dazu, mit Beispielen für JSON-Antworten.
 - [Filius-Aufgaben](https://jhumci.github.io/2024_SoSe_IoT1/IoT_5_Netzwerke_Aufgaben/): Ein Netzwerk-Simulator, der es ermöglicht, Netzwerktopologien zu erstellen und zu testen. Nutzen Sie das Skript und bearbeiten Sie die Aufgaben 1-12, 21, 22 im Skriptum, um sich mit den Grundlagen von Netzwerken vertraut zu machen.
-- Machen Sie sich mit der [OpenAPI Specification](https://de.wikipedia.org/wiki/OpenAPI)
