@@ -28,7 +28,7 @@ Jede Gruppe entwickelt mit einem eigenen Microcontroller und Sensor. Ziel des er
 
 ::: {.callout-important}
 ## CircuitPython, nicht MicroPython
-Die Vorlage `code.py`, der TOML-Parser in `lib/` und alle Hinweise auf dieser Seite beziehen sich auf **CircuitPython**. MicroPython ist ein naher Verwandter, aber die Vorlage und die Adafruit-Bibliotheken laufen dort nicht. Wenn Sie MicroPython oder den ESP32 verwenden möchten, sprechen Sie das vorher mit der Lehrveranstaltungsleitung ab.
+Die Vorlage `code.py`, der TOML-Parser in `lib/` und alle Hinweise auf dieser Seite beziehen sich auf **CircuitPython**. MicroPython ist ein naher Verwandter, aber die Vorlage und die Adafruit-Bibliotheken laufen dort nicht. Für den ESP32 gibt es eine eigene Vorlage in `src/esp32_firmware` (Arduino/PlatformIO). Wenn Sie MicroPython verwenden möchten, sprechen Sie das vorher mit der Lehrveranstaltungsleitung ab.
 :::
 
 1. **CircuitPython installieren.** Laden Sie die aktuelle `.uf2`-Datei für den [Raspberry Pi Pico W](https://circuitpython.org/board/raspberry_pi_pico_w/) herunter. Halten Sie die Taste `BOOTSEL` am Pico gedrückt, während Sie das USB-Kabel einstecken. Es erscheint ein Laufwerk `RPI-RP2`, auf das Sie die `.uf2`-Datei kopieren. Der Pico startet neu und meldet sich als Laufwerk `CIRCUITPY`.
@@ -55,7 +55,7 @@ Jeder Meilenstein liefert ein sichtbares Ergebnis. Gehen Sie erst zum nächsten,
 | 2 | Sensor auslesen (`adafruit_dht`), alle 2 Sekunden `print()` | Temperatur und Luftfeuchtigkeit erscheinen in der Konsole. Einzelne Fehlversuche werden abgefangen und das Programm läuft weiter. |
 | 3 | Mit dem WLAN verbinden (`wifi`, `socketpool`) | Die IP-Adresse des Pico erscheint in der Konsole. |
 | 4 | Eine einzelne MQTT-Nachricht senden (`adafruit_minimqtt`) | Die Nachricht ist im MQTT Explorer unter Ihrem Topic sichtbar. |
-| 5 | Spezifikation erfüllen | Payload ist JSON mit `timestamp`, `value` und `unit` wie in `asyncapi.yaml`. Auf dem Status-Topic steht `ok`, nach dem Abstecken des Pico wechselt es von selbst auf `offline`. |
+| 5 | Spezifikation erfüllen | Payload ist JSON mit `timestamp`, `value` und `unit` wie in `asyncapi.yaml`. Auf dem Status-Topic steht `ok`, nach dem Abstecken des Pico wechselt es nach kurzer Zeit von selbst auf `offline`. |
 | 6 | Refactoring | Struktur wie in der Vorlage, Konfiguration in `settings.toml`, Sendeintervall aus der Konfiguration. |
 
 ### Hinweise zu den schwierigen Stellen
@@ -64,7 +64,7 @@ Hier keine Lösungen, sondern die Stichworte, die Ihnen die Suche verkürzen:
 
 - **Zeitstempel.** Die Spezifikation verlangt einen Zeitstempel in UTC nach ISO 8601. Der Pico hat keine batteriegepufferte Uhr; nach dem Einschalten steht sie auf dem Jahr 2000. Stichworte: `adafruit_ntp` holt die Zeit aus dem Internet, das Modul `rtc` setzt die Uhr des Pico.
 - **Datum formatieren.** Das `time`-Modul von CircuitPython hat kein `strftime`. `time.localtime()` liefert aber ein Tupel aus Jahr, Monat, Tag, Stunde, Minute und Sekunde, aus dem sich der String mit einer Formatierung zusammenbauen lässt.
-- **Client-ID.** Der Broker erlaubt jede Client-ID nur einmal. Melden sich zwei Geräte mit derselben ID an, werfen sie sich gegenseitig hinaus, und beide sehen ständig Verbindungsabbrüche. Die Vorlage der `settings.toml` hat dafür keinen eigenen Schlüssel. Überlegen Sie, woraus Sie eine ID ableiten, die in der ganzen Gruppe eindeutig ist.
+- **Client-ID.** Der Broker erlaubt jede Client-ID nur einmal. Melden sich zwei Geräte mit derselben ID an, werfen sie sich gegenseitig hinaus, und beide sehen ständig Verbindungsabbrüche. Die Vorlage der `settings.toml` hat dafür keinen eigenen Schlüssel. Überlegen Sie, woraus Sie eine ID ableiten, die über alle Gruppen hinweg eindeutig ist.
 - **Last Will.** Das `offline` auf dem Status-Topic sendet nicht Ihr Programm, sondern der Broker, wenn die Verbindung abbricht. Es wird beim Verbindungsaufbau hinterlegt. Stichwort: `will_set()` in MiniMQTT, retained.
 - **Sensorfehler.** Der DHT11 liefert regelmäßig einen `RuntimeError` (Checksum, Timing). Das ist kein Fehler in Ihrem Aufbau, sondern normal. Fangen Sie ihn ab und versuchen Sie es beim nächsten Intervall erneut.
 
