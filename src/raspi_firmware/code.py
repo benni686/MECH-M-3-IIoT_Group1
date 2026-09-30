@@ -188,7 +188,21 @@ class MqttClient:
 # ===================================================================
 class WebServer:
     """
-    Stellt eine einfache HTTP-Schnittstelle zur Fernkonfiguration bereit.
+    Stellt die HTTP-Schnittstelle zur Fernkonfiguration bereit.
+
+    Die Endpunkte und das JSON-Format sind in docs/iot-specs/openapi.yaml
+    und docs/iot-specs/conventions.md festgelegt:
+      GET  /config  -> aktuelle Konfiguration als JSON
+      POST /config  <- neue Werte als JSON (z.B. {"reading_interval_seconds": 120})
+      GET  /status  -> Gerätestatus als JSON (Felder werden in der Gesamtgruppe festgelegt)
+    Eine zusätzliche HTML-Seite für Menschen (z.B. unter "/") ist optional.
+
+    Hinweise:
+    - poll() darf die Hauptschleife nicht blockieren, sonst bleibt MQTT stehen.
+      Stichworte: socket.setblocking(False), accept() liefert dann OSError
+      (EAGAIN), wenn gerade keine Anfrage anliegt.
+    - Nach einem Neustart per Auto-Reload ist Port 80 oft noch belegt.
+      Stichworte: SO_REUSEADDR, oder start() bei Fehler später erneut versuchen.
     """
 
     def __init__(self, config_manager: ConfigManager):
@@ -215,15 +229,24 @@ class WebServer:
 
     def _handle_get_request(self, request):
         """
-        Interne Methode: Bearbeitet GET-Anfragen und liefert das
-        HTML-Konfigurationsformular aus.
+        Interne Methode: Bearbeitet GET-Anfragen. Liefert je nach Pfad die
+        Konfiguration (/config) oder den Status (/status) als JSON aus,
+        für unbekannte Pfade den Statuscode 404.
         """
         pass
 
     def _handle_post_request(self, request):
         """
-        Interne Methode: Bearbeitet POST-Anfragen vom Formular, speichert
-        die neuen Einstellungen und löst einen Neustart aus.
+        Interne Methode: Bearbeitet POST /config. Liest den JSON-Body,
+        übernimmt die neuen Einstellungen und speichert sie über den
+        ConfigManager (siehe dort zum Thema Schreibschutz).
+
+        Hinweise:
+        - Der Body steht hinter der ersten Leerzeile ("\r\n\r\n") der Anfrage
+          und ist so lang wie im Header "Content-Length" angegeben. Er kommt
+          nicht immer in einem Stück an.
+        - Ungültiges JSON oder unbekannte Felder mit 400 beantworten,
+          nicht mit einem Absturz.
         """
         pass
 
