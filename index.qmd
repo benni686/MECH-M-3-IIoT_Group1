@@ -33,7 +33,7 @@ Wichtig ist hierbei, dass Sie **reflektiert** damit umgehen:
 
 ## Bewertungskriterien
 
-Die Arbeit erfolgt in Zweier-Gruppen. Das sich inhaltlich und qualitativ an den Anforderungen orientierende Gesamtkonzept wird bewertet. Dabei werden folgende Kriterien berücksichtigt:
+Die Arbeit erfolgt in Gruppen, die im ersten Termin eingeteilt werden. Die Gruppengröße richtet sich nach der verfügbaren Hardware. Das sich inhaltlich und qualitativ an den Anforderungen orientierende Gesamtkonzept wird bewertet. Dabei werden folgende Kriterien berücksichtigt:
 
 - Nutzerfreundlichkeit und Dokumentation:
     - Wie einfach ist es für einen neuen Nutzer, das System einzurichten und zu verwenden?
