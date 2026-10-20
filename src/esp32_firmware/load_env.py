@@ -12,6 +12,7 @@ KEYS = {
     "MQTT_HOST": "MQTT_BROKER_HOST",
     "MQTT_USER": "MQTT_USER",
     "MQTT_PASSWORD": "MQTT_PASSWORD",
+    "MQTT_USE_TLS": "MQTT_USE_TLS",
 }
 
 env_file = os.path.join(env.subst("$PROJECT_DIR"), ".env")
@@ -27,8 +28,14 @@ with open(env_file, encoding="utf-8") as f:
         key, value = line.split("=", 1)
         values[key.strip()] = value.strip().strip('"').strip("'")
 
-missing = [key for key in KEYS if key not in values]
+optional_defaults = {
+    "MQTT_USE_TLS": "false",
+}
+missing = [key for key in KEYS if key not in values and key not in optional_defaults]
 if missing:
     raise SystemExit("In .env fehlen: " + ", ".join(missing))
 
-env.Append(CPPDEFINES=[(macro, env.StringifyMacro(values[key])) for key, macro in KEYS.items()])
+env.Append(CPPDEFINES=[
+    (macro, env.StringifyMacro(values[key] if key in values else optional_defaults[key]))
+    for key, macro in KEYS.items()
+])
