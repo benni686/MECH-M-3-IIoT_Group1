@@ -1,0 +1,21 @@
+services:
+  dashboard:
+    build: ./src/cloud
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DATABASE_PATH: /data/iiot.sqlite3
+    ports:
+      - "8080:8080"
+    volumes:
+      - iiot-data:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/_stcore/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  iiot-data:
+

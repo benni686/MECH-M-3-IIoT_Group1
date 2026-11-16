@@ -8,5 +8,7 @@ _site/
 # PlatformIO / Zugangsdaten
 .pio/
 .env
+*.sqlite3
+.pytest_cache/
 
 **/*.quarto_ipynb

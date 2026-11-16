@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "env_config.h"
 #include <ArduinoJson.h>
 #include <WebServer.h>
 #include <WiFi.h>
@@ -20,9 +21,10 @@ constexpr uint8_t DHT20_I2C_ADDR = 0x38;
 // Credentials are injected from the ignored .env file by load_env.py.
 constexpr char WIFI_SSID_VALUE[] = WIFI_SSID;
 constexpr char WIFI_PASSWORD_VALUE[] = WIFI_PASSWORD;
+constexpr char WIFI_PROFILE_VALUE[] = WIFI_PROFILE_NAME;
 
 // Set the group slug to the participating members' lowercase surnames.
-constexpr char MQTT_GROUP[] = "hannes-unterhuber";
+constexpr char MQTT_GROUP[] = "unterhuber-brachmann-reimeir-noessing";
 constexpr char DEVICE_ID[] = "yourmuesli-innsbruck-01";
 constexpr char MQTT_HOST_VALUE[] = MQTT_BROKER_HOST;
 constexpr bool MQTT_USE_TLS_VALUE =
@@ -31,6 +33,7 @@ constexpr bool MQTT_USE_TLS_VALUE =
 constexpr uint16_t MQTT_PORT = MQTT_USE_TLS_VALUE ? 8883 : 1883;
 constexpr char MQTT_USER_VALUE[] = MQTT_USER;
 constexpr char MQTT_PASSWORD_VALUE[] = MQTT_PASSWORD;
+constexpr char MQTT_PROFILE_VALUE[] = MQTT_PROFILE_NAME;
 
 constexpr unsigned long DEFAULT_INTERVAL_MS = 60000;
 constexpr unsigned long WIFI_RETRY_MS = 10000;
@@ -56,6 +59,12 @@ unsigned long lastWiFiAttempt = 0;
 unsigned long lastMqttAttempt = 0;
 unsigned long lastDebugStatus = 0;
 bool dht20Detected = false;
+bool lastPublishSuccessful = false;
+unsigned long lastPublishAtMs = 0;
+float lastTemperature = NAN;
+float lastHumidity = NAN;
+float lastHygrometer1 = NAN;
+float lastHygrometer2 = NAN;
 
 String isoUtcNow() {
   time_t now = time(nullptr);
@@ -84,10 +93,10 @@ void publishStatus(const char* status) {
                 statusTopic.c_str(), payload.c_str());
 }
 
-void publishReading(const char* topic, float value, const char* unit) {
+bool publishReading(const char* topic, float value, const char* unit) {
   if (!mqttClient.connected()) {
     Serial.printf("[MQTT] Reading skipped: client is not connected (%s)\n", topic);
-    return;
+    return false;
   }
 
   JsonDocument document;
@@ -102,6 +111,12 @@ void publishReading(const char* topic, float value, const char* unit) {
   const bool published = mqttClient.publish(topic, payload.c_str(), true);
   Serial.printf("[MQTT] Reading %s: %s -> %s\n",
                 published ? "published" : "failed", topic, payload.c_str());
+  return published;
+}
+
+bool clockIsSynchronized() {
+  // 2024-01-01. Prevent invalid 1970 timestamps before NTP has completed.
+  return time(nullptr) >= 1704067200;
 }
 
 bool readDht20(float& humidity, float& temperature) {
@@ -165,27 +180,39 @@ void publishSensorData() {
     Serial.println("[Sensor] Measurement skipped: MQTT is not connected");
     return;
   }
+  if (!clockIsSynchronized()) {
+    Serial.println("[NTP] Measurement postponed until the clock is synchronized");
+    return;
+  }
 
   float humidity = NAN;
   float temperature = NAN;
   const bool dhtOk = readDht20(humidity, temperature);
   const float hygrometer1 = readHygrometer(HYGROMETER_1_PIN);
   const float hygrometer2 = readHygrometer(HYGROMETER_2_PIN);
+  lastHumidity = humidity;
+  lastTemperature = temperature;
+  lastHygrometer1 = hygrometer1;
+  lastHygrometer2 = hygrometer2;
 
   Serial.printf("[Sensor] hygrometer 1: %.2f %% (GPIO %u), hygrometer 2: %.2f %% (GPIO %u)\n",
                 hygrometer1, HYGROMETER_1_PIN, hygrometer2, HYGROMETER_2_PIN);
   if (dhtOk) {
-    publishReading(temperatureTopic.c_str(), temperature, "°C");
-    publishReading(humidityTopic.c_str(), humidity, "%");
+    const bool temperaturePublished = publishReading(temperatureTopic.c_str(), temperature, "°C");
+    const bool humidityPublished = publishReading(humidityTopic.c_str(), humidity, "%");
     publishStatus("ok");
+    lastPublishSuccessful = temperaturePublished && humidityPublished;
     Serial.printf("[Sensor] %.2f °C, %.2f %% RH, hygrometer 1: %.2f %%, hygrometer 2: %.2f %%\n",
                   temperature, humidity, hygrometer1, hygrometer2);
   } else {
     publishStatus("error");
+    lastPublishSuccessful = false;
     Serial.printf("[DHT20] Read failed (I2C address 0x%02X)\n", DHT20_I2C_ADDR);
   }
-  publishReading(hygrometer1Topic.c_str(), hygrometer1, "%");
-  publishReading(hygrometer2Topic.c_str(), hygrometer2, "%");
+  const bool hygrometer1Published = publishReading(hygrometer1Topic.c_str(), hygrometer1, "%");
+  const bool hygrometer2Published = publishReading(hygrometer2Topic.c_str(), hygrometer2, "%");
+  lastPublishSuccessful = lastPublishSuccessful && hygrometer1Published && hygrometer2Published;
+  lastPublishAtMs = millis();
 }
 
 void handleGetConfig() {
@@ -211,6 +238,11 @@ void handlePostConfig() {
                 "{\"error\":\"reading_interval_seconds must be an integer\"}");
     return;
   }
+  if (document.size() != 1) {
+    server.send(400, "application/json",
+                "{\"error\":\"unknown configuration field\"}");
+    return;
+  }
 
   const unsigned long seconds = document["reading_interval_seconds"];
   if (seconds < 2 || seconds > 86400) {
@@ -228,13 +260,32 @@ void handleStatus() {
   document["device_id"] = DEVICE_ID;
   document["wifi_connected"] = WiFi.status() == WL_CONNECTED;
   document["mqtt_connected"] = mqttClient.connected();
+  document["clock_synchronized"] = clockIsSynchronized();
   document["ip"] = WiFi.localIP().toString();
+  document["uptime_seconds"] = millis() / 1000UL;
+  document["last_publish_successful"] = lastPublishSuccessful;
+  if (lastPublishAtMs > 0) {
+    document["seconds_since_last_publish"] = (millis() - lastPublishAtMs) / 1000UL;
+  } else {
+    document["seconds_since_last_publish"] = nullptr;
+  }
+  JsonObject readings = document["last_readings"].to<JsonObject>();
+  if (!isnan(lastTemperature)) readings["temperature_c"] = lastTemperature;
+  if (!isnan(lastHumidity)) readings["humidity_percent"] = lastHumidity;
+  if (!isnan(lastHygrometer1)) readings["hygrometer_1_percent"] = lastHygrometer1;
+  if (!isnan(lastHygrometer2)) readings["hygrometer_2_percent"] = lastHygrometer2;
   String response;
   serializeJson(document, response);
   server.send(200, "application/json", response);
 }
 
 void handleNotFound() {
+  const String uri = server.uri();
+  if (uri == "/" || uri == "/config" || uri == "/status") {
+    server.sendHeader("Allow", uri == "/config" ? "GET, POST" : "GET");
+    server.send(405, "application/json", "{\"error\":\"method not allowed\"}");
+    return;
+  }
   server.send(404, "application/json", "{\"error\":\"not found\"}");
 }
 
@@ -292,12 +343,12 @@ const char* wifiStatusText(wl_status_t status) {
 
 void printDebugStatus() {
   const wl_status_t status = WiFi.status();
-  Serial.printf("[DEBUG] WiFi=%s (%d), RSSI=%d dBm, IP=%s, MQTT=%s, free heap=%u\n",
+  Serial.printf("[DEBUG] WiFi=%s (%d), RSSI=%d dBm, IP=%s, MQTT=%s, free heap=%lu\n",
                 wifiStatusText(status), status,
                 status == WL_CONNECTED ? WiFi.RSSI() : 0,
                 WiFi.localIP().toString().c_str(),
                 mqttClient.connected() ? "CONNECTED" : "DISCONNECTED",
-                ESP.getFreeHeap());
+                static_cast<unsigned long>(ESP.getFreeHeap()));
 }
 
 void connectMqtt() {
@@ -336,6 +387,8 @@ void setup() {
   Serial.println("\n========== IIoT ESP32 SENSOR ==========");
   Serial.println("[BOOT] Debug logging enabled");
   Serial.println("[BOOT] This firmware supports a DHT20 over I2C, not a DHT11.");
+  Serial.printf("[BOOT] Profiles: WiFi=%s, MQTT=%s\n",
+                WIFI_PROFILE_VALUE, MQTT_PROFILE_VALUE);
 
   temperatureTopic = "iiot/group/" + String(MQTT_GROUP) +
                      "/sensor/temperature/state";

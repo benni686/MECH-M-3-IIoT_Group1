@@ -4,10 +4,9 @@ Die Firmware setzt die Vorgaben aus `MECH-M-3-IIoT` um und verwendet die
 Hardware aus diesem Projekt: einen DHT20 über I²C sowie zwei analoge
 Hygrometer-Sensoren.
 
-> Das MQTT-Passwort des Kurs-Brokers wird laut Aufgabenstellung in der
-> Vorlesung bekanntgegeben. Vor dem Upload muss `MQTT_PASSWORD` in
-> `src/main.cpp` ersetzt werden. Der Gruppenname `MQTT_GROUP` muss ebenfalls
-> an die tatsächlichen Nachnamen der Gruppe angepasst werden.
+> Das MQTT-Passwort des Kurs-Brokers wird in der Vorlesung bekanntgegeben.
+> Vor dem Upload müssen WLAN und MQTT-Zugangsdaten in `.env` eingetragen
+> werden. Diese lokale Datei wird nicht committed.
 
 ## Hardware-Konfiguration
 
@@ -24,13 +23,35 @@ Hygrometer-Sensoren.
 
 1. PlatformIO und die Espressif32-Plattform in VS Code installieren.
 2. `.env.example` nach `.env` kopieren und die Zugangsdaten eintragen.
-3. `MQTT_GROUP` in `src/main.cpp` anpassen.
+3. Prüfen, dass der Gruppen-Slug `unterhuber-brachmann-reimeir-noessing` lautet.
 4. ESP32-C3 über USB anschließen.
 5. Mit `pio run -t upload` flashen.
 6. Die serielle Ausgabe mit `pio device monitor --baud 115200` öffnen.
 
 Die lokale `.env` ist in `.gitignore` ausgeschlossen und enthält das WLAN- sowie
 das MQTT-Passwort.
+
+## Profilumschaltung
+
+WLAN und Broker werden unabhängig über zwei Werte in `.env` ausgewählt:
+
+```text
+WIFI_PROFILE="zentrum"  # alternativ: "kurs"
+MQTT_PROFILE="emqx"     # alternativ: "kurs"
+```
+
+`zentrum` verwendet `WIFI_SSID` und `WIFI_PASSWORD`; `kurs` verwendet
+`KURS_SSID` und `KURS_PASSWORD`. Beim Broker verwendet `emqx` die Werte
+`MQTT_HOST`, `MQTT_USER`, `MQTT_PASSWORD` und `MQTT_USE_TLS`. Das Kursprofil
+setzt automatisch Host `158.180.44.197`, Port `1883`, Benutzer `bobm` und
+TLS aus; dafür muss nur `MQTT_KURS_BROKER_PASS` eingetragen werden.
+
+Beim Start zeigt die serielle Konsole die ausgewählten Profilnamen, aber keine
+Passwörter. Ein einmaliger Build mit abweichender Auswahl ist ebenfalls möglich:
+
+```bash
+WIFI_PROFILE=kurs MQTT_PROFILE=kurs pio run
+```
 
 ## MQTT
 
