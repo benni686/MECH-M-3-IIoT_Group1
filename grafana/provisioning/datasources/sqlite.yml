@@ -1,0 +1,15 @@
+# SQLite-Datenbank des Collectors als Grafana-Datenquelle (Plugin frser-sqlite-datasource).
+# Die Datei liegt im Volume iiot-data, das Grafana nur lesend unter /data einbindet.
+apiVersion: 1
+
+datasources:
+  - name: IIoT SQLite
+    uid: iiot-sqlite
+    type: frser-sqlite-datasource
+    access: proxy
+    isDefault: true
+    editable: false
+    jsonData:
+      path: /data/iiot.sqlite3
+      # nur lesen, bei gleichzeitigem Schreiben des Collectors bis zu 5 s warten
+      pathOptions: mode=ro&_pragma=busy_timeout(5000)

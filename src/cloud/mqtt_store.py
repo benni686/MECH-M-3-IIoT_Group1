@@ -3,6 +3,8 @@ import logging
 import os
 import sqlite3
 import threading
+import time
+from contextlib import closing
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -31,12 +33,15 @@ def connect_db() -> sqlite3.Connection:
     return connection
 
 
-def initialize_database() -> None:
+def initialize_database() -> str:
+    """Create tables and indexes. Returns the active journal mode."""
     DATABASE.parent.mkdir(parents=True, exist_ok=True)
-    with DB_LOCK, connect_db() as db:
+    with DB_LOCK, closing(connect_db()) as db:
+        # Rollback journal instead of WAL: Grafana reads the file through a
+        # read-only volume and SQLite cannot create the WAL "-shm" file there.
+        mode = db.execute("PRAGMA journal_mode=DELETE").fetchone()[0]
         db.executescript(
             """
-            PRAGMA journal_mode=WAL;
             CREATE TABLE IF NOT EXISTS readings (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 group_name TEXT NOT NULL,
@@ -61,6 +66,25 @@ def initialize_database() -> None:
             );
             """
         )
+        # Retained messages are delivered again on every (re)connect. Remove
+        # duplicates stored by older versions, then let a unique index reject them.
+        if not db.execute(
+            "SELECT 1 FROM sqlite_master WHERE type='index' AND name='uq_readings'"
+        ).fetchone():
+            db.execute(
+                """DELETE FROM readings WHERE id NOT IN (
+                       SELECT MIN(id) FROM readings
+                       GROUP BY group_name, sensor_type, IFNULL(sensor_id, ''),
+                                measured_at, value)"""
+            )
+            db.execute(
+                """CREATE UNIQUE INDEX uq_readings ON readings(
+                       group_name, sensor_type, IFNULL(sensor_id, ''), measured_at, value)"""
+            )
+        db.commit()
+    if mode.lower() != "delete":
+        LOG.warning("journal_mode is still %s (database busy?); Grafana may fail to read it", mode)
+    return mode
 
 
 def parse_topic(topic: str) -> tuple[str | None, str | None]:
@@ -77,7 +101,7 @@ def parse_topic(topic: str) -> tuple[str | None, str | None]:
     return None, None
 
 
-def _iso_timestamp(value: Any, fallback: str) -> str:
+def _parse_iso(value: Any) -> str | None:
     if isinstance(value, str):
         try:
             parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
@@ -86,9 +110,13 @@ def _iso_timestamp(value: Any, fallback: str) -> str:
             return parsed.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
         except ValueError:
             pass
+    return None
+
+
+def _iso_timestamp(value: Any, fallback: str) -> str:
     # Several course devices publish millis() rather than Unix time. Such values
     # are not wall-clock timestamps, so reception time is the honest fallback.
-    return fallback
+    return _parse_iso(value) or fallback
 
 
 def normalize_readings(
@@ -125,14 +153,15 @@ def normalize_readings(
     return readings
 
 
-def store_message(topic: str, raw_payload: bytes) -> int:
+def store_message(topic: str, raw_payload: bytes, retained: bool = False) -> int:
+    """Store one MQTT message. Returns the number of new rows."""
     group, message_type = parse_topic(topic)
     if not group:
         return 0
     received_at = utc_now()
     try:
         decoded = json.loads(raw_payload.decode("utf-8"))
-        with DB_LOCK, connect_db() as db:
+        with DB_LOCK, closing(connect_db()) as db, db:
             if message_type == "status":
                 payload = decoded if isinstance(decoded, dict) else {"status": decoded}
                 status = str(payload.get("status", "unknown"))
@@ -150,9 +179,14 @@ def store_message(topic: str, raw_payload: bytes) -> int:
                 return 1
             if not isinstance(decoded, dict):
                 return 0
+            if retained and _parse_iso(decoded.get("timestamp")) is None:
+                # A retained value without a real timestamp would be stored again
+                # with a new reception time on every reconnect. Skip it.
+                return 0
             rows = normalize_readings(message_type, decoded, received_at)
+            before = db.total_changes
             db.executemany(
-                """INSERT INTO readings
+                """INSERT OR IGNORE INTO readings
                    (group_name, sensor_type, sensor_id, measured_at, received_at,
                     value, unit, status, topic)
                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
@@ -160,7 +194,7 @@ def store_message(topic: str, raw_payload: bytes) -> int:
                   received_at, row["value"], row["unit"], row["status"], topic)
                  for row in rows],
             )
-            return len(rows)
+            return db.total_changes - before
     except (UnicodeDecodeError, json.JSONDecodeError, TypeError, ValueError) as error:
         LOG.warning("Rejected message on %s: %s", topic, error)
         return 0
@@ -171,9 +205,10 @@ class MqttCollector:
         initialize_database()
         self.connected = False
         self.last_error = ""
+        self.last_message_at = 0.0
         self.client = mqtt.Client(
             mqtt.CallbackAPIVersion.VERSION2,
-            client_id=f"iiot-streamlit-{uuid4().hex[:10]}",
+            client_id=f"iiot-collector-{uuid4().hex[:10]}",
             protocol=mqtt.MQTTv5,
         )
         if MQTT_USER:
@@ -190,14 +225,21 @@ class MqttCollector:
         self.connected = reason_code == 0
         self.last_error = "" if self.connected else str(reason_code)
         if self.connected:
+            LOG.info("Connected to MQTT broker %s:%s", MQTT_HOST, MQTT_PORT)
             client.subscribe("iiot/group/#", qos=1)
+        else:
+            LOG.error("MQTT connection refused: %s", reason_code)
 
     def _on_disconnect(self, client, userdata, flags, reason_code, properties) -> None:
         self.connected = False
         if reason_code != 0:
             self.last_error = str(reason_code)
+            LOG.warning("MQTT disconnected: %s", reason_code)
 
-    @staticmethod
-    def _on_message(client, userdata, message) -> None:
-        store_message(message.topic, message.payload)
+    def _on_message(self, client, userdata, message) -> None:
+        self.last_message_at = time.time()
+        store_message(message.topic, message.payload, retained=bool(message.retain))
 
+    def stop(self) -> None:
+        self.client.loop_stop()
+        self.client.disconnect()

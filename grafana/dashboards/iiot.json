@@ -1,0 +1,570 @@
+{
+  "uid": "iiot-sensoren",
+  "title": "IIoT Sensor-Dashboard",
+  "description": "Live-Daten vom Kurs-Broker (Topic iiot/group/#), gespeichert vom Collector in SQLite.",
+  "tags": [
+    "iiot",
+    "mqtt"
+  ],
+  "timezone": "browser",
+  "editable": true,
+  "graphTooltip": 1,
+  "refresh": "5s",
+  "schemaVersion": 39,
+  "version": 1,
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m"
+    ]
+  },
+  "templating": {
+    "list": [
+      {
+        "name": "group",
+        "label": "Gruppe",
+        "type": "query",
+        "datasource": {
+          "type": "frser-sqlite-datasource",
+          "uid": "iiot-sqlite"
+        },
+        "query": "SELECT DISTINCT group_name FROM readings ORDER BY group_name",
+        "definition": "SELECT DISTINCT group_name FROM readings ORDER BY group_name",
+        "refresh": 1,
+        "sort": 1,
+        "multi": false,
+        "includeAll": false,
+        "hide": 0,
+        "current": {
+          "selected": true,
+          "text": "unterhuber-brachmann-reimeir-noessing",
+          "value": "unterhuber-brachmann-reimeir-noessing"
+        },
+        "options": [],
+        "regex": ""
+      },
+      {
+        "name": "sensor",
+        "label": "Sensoren",
+        "type": "query",
+        "datasource": {
+          "type": "frser-sqlite-datasource",
+          "uid": "iiot-sqlite"
+        },
+        "query": "SELECT DISTINCT sensor_type FROM readings WHERE group_name = '$group' ORDER BY sensor_type",
+        "definition": "SELECT DISTINCT sensor_type FROM readings WHERE group_name = '$group' ORDER BY sensor_type",
+        "refresh": 1,
+        "sort": 1,
+        "multi": true,
+        "includeAll": true,
+        "hide": 0,
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "options": [],
+        "regex": ""
+      },
+      {
+        "name": "unit",
+        "label": "Einheit",
+        "type": "query",
+        "datasource": {
+          "type": "frser-sqlite-datasource",
+          "uid": "iiot-sqlite"
+        },
+        "query": "SELECT DISTINCT unit FROM readings WHERE group_name = '$group' AND sensor_type IN (${sensor:sqlstring}) ORDER BY unit",
+        "definition": "SELECT DISTINCT unit FROM readings WHERE group_name = '$group' AND sensor_type IN (${sensor:sqlstring}) ORDER BY unit",
+        "refresh": 1,
+        "sort": 1,
+        "multi": true,
+        "includeAll": true,
+        "hide": 2,
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "options": [],
+        "regex": ""
+      }
+    ]
+  },
+  "annotations": {
+    "list": []
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Aktuelle Werte",
+      "description": "Letzter Messwert je Sensor im gewählten Zeitraum, mit Verlauf.",
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "iiot-sqlite"
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "iiot-sqlite"
+          },
+          "queryType": "time series",
+          "rawQueryText": "SELECT CAST(strftime('%s', measured_at) AS INTEGER) AS time, sensor_type, AVG(value) AS value\nFROM readings\nWHERE group_name = '$group'\n  AND sensor_type IN (${sensor:sqlstring})\n  AND CAST(strftime('%s', measured_at) AS INTEGER) >= $__from / 1000 AND CAST(strftime('%s', measured_at) AS INTEGER) < $__to / 1000\nGROUP BY 1, 2\nORDER BY 1",
+          "queryText": "SELECT CAST(strftime('%s', measured_at) AS INTEGER) AS time, sensor_type, AVG(value) AS value\nFROM readings\nWHERE group_name = '$group'\n  AND sensor_type IN (${sensor:sqlstring})\n  AND CAST(strftime('%s', measured_at) AS INTEGER) >= $__from / 1000 AND CAST(strftime('%s', measured_at) AS INTEGER) < $__to / 1000\nGROUP BY 1, 2\nORDER BY 1",
+          "timeColumns": [
+            "time"
+          ]
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "displayName": "${__field.labels.sensor_type}",
+          "decimals": 2,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*temperatur.*"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "celsius"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*(humid|hygro|feucht).*"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "graphMode": "area",
+        "colorMode": "value",
+        "textMode": "value_and_name",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "wideLayout": true
+      }
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Gerätestatus",
+      "description": "Letzte Meldung auf iiot/group/<gruppe>/status (ok, error, offline).",
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "iiot-sqlite"
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 12,
+        "y": 0
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "iiot-sqlite"
+          },
+          "queryType": "table",
+          "rawQueryText": "SELECT status\nFROM device_status\nWHERE group_name = '$group'",
+          "queryText": "SELECT status\nFROM device_status\nWHERE group_name = '$group'",
+          "timeColumns": []
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "noValue": "unbekannt",
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "ok": {
+                  "text": "ok",
+                  "color": "green",
+                  "index": 0
+                },
+                "error": {
+                  "text": "error",
+                  "color": "red",
+                  "index": 1
+                },
+                "offline": {
+                  "text": "offline",
+                  "color": "orange",
+                  "index": 2
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^status$/",
+          "values": false
+        },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value",
+        "justifyMode": "center",
+        "orientation": "auto"
+      }
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Letzte Nachricht",
+      "description": "Wann der Collector zuletzt einen Messwert dieser Gruppe empfangen hat.",
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "iiot-sqlite"
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 16,
+        "y": 0
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "iiot-sqlite"
+          },
+          "queryType": "table",
+          "rawQueryText": "SELECT CAST(strftime('%s', MAX(received_at)) AS INTEGER) * 1000 AS letzte_nachricht\nFROM readings\nWHERE group_name = '$group'",
+          "queryText": "SELECT CAST(strftime('%s', MAX(received_at)) AS INTEGER) * 1000 AS letzte_nachricht\nFROM readings\nWHERE group_name = '$group'",
+          "timeColumns": []
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "dateTimeFromNow",
+          "noValue": "noch nie",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "text"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value",
+        "justifyMode": "center",
+        "orientation": "auto"
+      }
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Werte im Zeitraum",
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "iiot-sqlite"
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 20,
+        "y": 0
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "iiot-sqlite"
+          },
+          "queryType": "table",
+          "rawQueryText": "SELECT COUNT(*) AS anzahl\nFROM readings\nWHERE group_name = '$group'\n  AND sensor_type IN (${sensor:sqlstring})\n  AND CAST(strftime('%s', measured_at) AS INTEGER) >= $__from / 1000 AND CAST(strftime('%s', measured_at) AS INTEGER) < $__to / 1000",
+          "queryText": "SELECT COUNT(*) AS anzahl\nFROM readings\nWHERE group_name = '$group'\n  AND sensor_type IN (${sensor:sqlstring})\n  AND CAST(strftime('%s', measured_at) AS INTEGER) >= $__from / 1000 AND CAST(strftime('%s', measured_at) AS INTEGER) < $__to / 1000",
+          "timeColumns": []
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "text"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value",
+        "justifyMode": "center",
+        "orientation": "auto"
+      }
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "Zeitverlauf ($unit)",
+      "description": "Sensoren mit gleicher Einheit werden gemeinsam dargestellt.",
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "iiot-sqlite"
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 6
+      },
+      "repeat": "unit",
+      "repeatDirection": "v",
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "iiot-sqlite"
+          },
+          "queryType": "time series",
+          "rawQueryText": "SELECT CAST(strftime('%s', measured_at) AS INTEGER) AS time, sensor_type, AVG(value) AS value\nFROM readings\nWHERE group_name = '$group'\n  AND sensor_type IN (${sensor:sqlstring})\n  AND CAST(strftime('%s', measured_at) AS INTEGER) >= $__from / 1000 AND CAST(strftime('%s', measured_at) AS INTEGER) < $__to / 1000\n  AND unit = '$unit'\nGROUP BY 1, 2\nORDER BY 1",
+          "queryText": "SELECT CAST(strftime('%s', measured_at) AS INTEGER) AS time, sensor_type, AVG(value) AS value\nFROM readings\nWHERE group_name = '$group'\n  AND sensor_type IN (${sensor:sqlstring})\n  AND CAST(strftime('%s', measured_at) AS INTEGER) >= $__from / 1000 AND CAST(strftime('%s', measured_at) AS INTEGER) < $__to / 1000\n  AND unit = '$unit'\nGROUP BY 1, 2\nORDER BY 1",
+          "timeColumns": [
+            "time"
+          ]
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "displayName": "${__field.labels.sensor_type}",
+          "decimals": 2,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "gradientMode": "opacity",
+            "showPoints": "auto",
+            "pointSize": 4,
+            "spanNulls": false,
+            "axisPlacement": "auto"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*temperatur.*"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "celsius"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*(humid|hygro|feucht).*"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 7,
+      "type": "row",
+      "title": "Messdaten anzeigen",
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 17
+      },
+      "panels": [
+        {
+          "id": 6,
+          "type": "table",
+          "title": "Messdaten (neueste zuerst, max. 2000)",
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "iiot-sqlite"
+          },
+          "gridPos": {
+            "h": 12,
+            "w": 24,
+            "x": 0,
+            "y": 18
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "frser-sqlite-datasource",
+                "uid": "iiot-sqlite"
+              },
+              "queryType": "table",
+              "rawQueryText": "SELECT CAST(strftime('%s', measured_at) AS INTEGER) AS time, sensor_type, sensor_id, value, unit, status, received_at\nFROM readings\nWHERE group_name = '$group'\n  AND sensor_type IN (${sensor:sqlstring})\n  AND CAST(strftime('%s', measured_at) AS INTEGER) >= $__from / 1000 AND CAST(strftime('%s', measured_at) AS INTEGER) < $__to / 1000\nORDER BY measured_at DESC\nLIMIT 2000",
+              "queryText": "SELECT CAST(strftime('%s', measured_at) AS INTEGER) AS time, sensor_type, sensor_id, value, unit, status, received_at\nFROM readings\nWHERE group_name = '$group'\n  AND sensor_type IN (${sensor:sqlstring})\n  AND CAST(strftime('%s', measured_at) AS INTEGER) >= $__from / 1000 AND CAST(strftime('%s', measured_at) AS INTEGER) < $__to / 1000\nORDER BY measured_at DESC\nLIMIT 2000",
+              "timeColumns": [
+                "time"
+              ]
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "align": "auto",
+                "filterable": true
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "time"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Messzeitpunkt"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "received_at"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "empfangen (UTC)"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "showHeader": true,
+            "cellHeight": "sm",
+            "footer": {
+              "show": false
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

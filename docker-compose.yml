@@ -1,4 +1,23 @@
 services:
+  # Schreibt alle Nachrichten von iiot/group/# rund um die Uhr in SQLite.
+  collector:
+    build: ./src/cloud
+    restart: unless-stopped
+    command: ["python", "collector.py"]
+    env_file:
+      - .env
+    environment:
+      DATABASE_PATH: /data/iiot.sqlite3
+    volumes:
+      - iiot-data:/data
+    healthcheck:
+      test: ["CMD", "python", "collector.py", "--health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  # Streamlit-Dashboard, liest nur noch aus der Datenbank.
   dashboard:
     build: ./src/cloud
     restart: unless-stopped
@@ -6,16 +25,41 @@ services:
       - .env
     environment:
       DATABASE_PATH: /data/iiot.sqlite3
+      DISABLE_MQTT: "1"
     ports:
       - "8080:8080"
     volumes:
       - iiot-data:/data
+    depends_on:
+      - collector
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/_stcore/health')"]
       interval: 30s
       timeout: 5s
       retries: 3
 
+  # Grafana-Dashboard auf derselben Datenbank (nur lesend eingebunden).
+  grafana:
+    image: grafana/grafana:12.4.3
+    restart: unless-stopped
+    environment:
+      GF_PLUGINS_PREINSTALL_SYNC: frser-sqlite-datasource@4.0.6
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /etc/grafana/dashboards/iiot.json
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+    ports:
+      - "3000:3000"
+    volumes:
+      - iiot-data:/data:ro
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/etc/grafana/dashboards:ro
+      - grafana-data:/var/lib/grafana
+    depends_on:
+      - collector
+
 volumes:
   iiot-data:
-
+  grafana-data:
