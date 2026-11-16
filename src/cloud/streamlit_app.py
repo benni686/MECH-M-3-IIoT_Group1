@@ -1,4 +1,5 @@
 import os
+from contextlib import closing
 from datetime import datetime, timedelta, timezone
 
 import pandas as pd
@@ -18,7 +19,7 @@ def start_collector() -> MqttCollector | None:
 
 
 def load_catalog() -> pd.DataFrame:
-    with connect_db() as db:
+    with closing(connect_db()) as db:
         return pd.read_sql_query(
             """SELECT r.group_name, r.sensor_type, r.unit, COUNT(*) AS samples,
                       MIN(r.measured_at) AS first_measurement,
@@ -40,7 +41,7 @@ def load_readings(group: str, sensors: list[str], since: datetime, limit: int) -
                   AND measured_at >= ?
                 ORDER BY measured_at DESC LIMIT ?"""
     parameters = [group, *sensors, since.isoformat().replace("+00:00", "Z"), limit]
-    with connect_db() as db:
+    with closing(connect_db()) as db:
         frame = pd.read_sql_query(query, db, params=parameters)
     if not frame.empty:
         frame["measured_at"] = pd.to_datetime(frame["measured_at"], utc=True, errors="coerce")
@@ -58,7 +59,10 @@ st.caption("Live-Daten vom Kurs-Broker · Topic `iiot/group/#` · automatische A
 def dashboard() -> None:
     catalog = load_catalog()
     if catalog.empty:
-        st.info("Noch keine Sensordaten empfangen. Verbindung und Zugangsdaten werden geprüft …")
+        if collector is None:
+            st.info("Noch keine Sensordaten in der Datenbank. Läuft der Collector-Dienst? (docker compose logs collector)")
+        else:
+            st.info("Noch keine Sensordaten empfangen. Verbindung und Zugangsdaten werden geprüft …")
         if collector and collector.last_error:
             st.error(f"MQTT-Verbindungsfehler: {collector.last_error}")
         return
@@ -115,7 +119,10 @@ def dashboard() -> None:
         st.dataframe(shown, use_container_width=True, hide_index=True)
 
     status = catalog.loc[catalog["group_name"] == group, "device_status"].dropna()
-    broker_state = "verbunden" if collector and collector.connected else "wird verbunden"
+    if collector is None:
+        broker_state = "über Collector-Dienst"
+    else:
+        broker_state = "verbunden" if collector.connected else "wird verbunden"
     device_state = status.iloc[0] if not status.empty else "unbekannt"
     st.caption(f"Broker: {broker_state} · Gerätestatus: {device_state} · {len(data):,} dargestellte Werte")
 
