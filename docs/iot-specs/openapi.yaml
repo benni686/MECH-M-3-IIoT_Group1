@@ -1,52 +1,123 @@
 openapi: 3.0.3
 info:
-  title: Microcontroller REST API
-  description: |
-    REST-Schnittstelle des Microcontrollers zur Konfiguration.
-    Hinweis: Kommunikation unverschlüsselt (HTTP).
-    Die Feldnamen entsprechen den Schlüsseln in settings.toml.
-  version: 1.1.0
+  title: MECH-M-3-IIoT ESP32 REST API
+  description: Unverschlüsselte lokale HTTP-Schnittstelle zur Konfiguration und Diagnose.
+  version: 2.0.0
 servers:
-  - url: http://192.168.0.100
-    description: Beispiel-Microcontroller
-
+  - url: http://{deviceIp}
+    variables:
+      deviceIp: {default: 192.168.0.100}
 paths:
-  /config:
+  /:
     get:
-      summary: Konfiguration abrufen
-      description: Gibt die aktuelle Konfiguration zurück (z.B. Sendeintervall).
+      operationId: getRoot
+      summary: Erreichbarkeit prüfen
       responses:
         '200':
-          description: Erfolgreiche Antwort mit der aktuellen Konfiguration
+          description: Gerät ist erreichbar
+          content:
+            text/plain:
+              schema: {type: string}
+    post:
+      responses:
+        '405': {$ref: '#/components/responses/MethodNotAllowed'}
+  /config:
+    get:
+      operationId: getConfig
+      summary: Aktuelle Konfiguration abrufen
+      responses:
+        '200':
+          description: Aktuelle Konfiguration
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/Config'
+              schema: {$ref: '#/components/schemas/Config'}
     post:
-      summary: Konfiguration setzen
-      description: Überschreibt die Konfiguration (z.B. neues Sendeintervall).
+      operationId: updateConfig
+      summary: Sendeintervall im laufenden Betrieb ändern
       requestBody:
         required: true
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/Config'
-            example:
-              reading_interval_seconds: 120
+            schema: {$ref: '#/components/schemas/ConfigUpdate'}
       responses:
         '200':
-          description: Konfiguration erfolgreich gesetzt
-
+          description: Konfiguration übernommen
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/UpdateResult'}
+        '400': {$ref: '#/components/responses/BadRequest'}
+    put:
+      responses:
+        '405': {$ref: '#/components/responses/MethodNotAllowed'}
+  /status:
+    get:
+      operationId: getStatus
+      summary: Laufzeit-, Verbindungs- und Messstatus abrufen
+      responses:
+        '200':
+          description: Aktueller Gerätestatus
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/DeviceStatus'}
+    post:
+      responses:
+        '405': {$ref: '#/components/responses/MethodNotAllowed'}
 components:
+  responses:
+    BadRequest:
+      description: Ungültiges JSON oder ungültiger Wert
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Error'}
+    MethodNotAllowed:
+      description: HTTP-Methode ist für diesen Pfad nicht erlaubt
+      headers:
+        Allow:
+          schema: {type: string}
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Error'}
   schemas:
     Config:
       type: object
+      required: [device_id, reading_interval_seconds, location]
       properties:
-        device_id:
-          type: string
-          description: Eindeutiger Name des Sensors (wird in den MQTT-Nachrichten verwendet)
-          example: "yourmuesli-innsbruck-01"
-        reading_interval_seconds:
-          type: integer
-          description: Sendeintervall in Sekunden
-          example: 60
+        device_id: {type: string, example: yourmuesli-innsbruck-01}
+        reading_interval_seconds: {type: integer, minimum: 2, maximum: 86400, example: 60}
+        location: {type: string, example: 'Produktionshalle 1, Innsbruck'}
+    ConfigUpdate:
+      type: object
+      required: [reading_interval_seconds]
+      additionalProperties: false
+      properties:
+        reading_interval_seconds: {type: integer, minimum: 2, maximum: 86400}
+    UpdateResult:
+      type: object
+      required: [status]
+      properties:
+        status: {type: string, enum: [updated]}
+    DeviceStatus:
+      type: object
+      required: [device_id, wifi_connected, mqtt_connected, clock_synchronized, ip, uptime_seconds, last_publish_successful, last_readings]
+      properties:
+        device_id: {type: string}
+        wifi_connected: {type: boolean}
+        mqtt_connected: {type: boolean}
+        clock_synchronized: {type: boolean}
+        ip: {type: string}
+        uptime_seconds: {type: integer, minimum: 0}
+        last_publish_successful: {type: boolean}
+        seconds_since_last_publish: {type: integer, nullable: true, minimum: 0}
+        last_readings:
+          type: object
+          properties:
+            temperature_c: {type: number}
+            humidity_percent: {type: number, minimum: 0, maximum: 100}
+            hygrometer_1_percent: {type: number, minimum: 0, maximum: 100}
+            hygrometer_2_percent: {type: number, minimum: 0, maximum: 100}
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error: {type: string}
+

@@ -1,33 +1,157 @@
-# Dokumentation
+# Projektdokumentation Gruppe 1
 
-:::{.callout-tip}
-## Hinweis
-Hier ist Platz für ihre Dokumentation. Dieses Dokument ist in [Quarto](https://quarto.org/) geschrieben und wird automatisch in HTML umgewandelt. Da Quarto ein Superset von Markdown ist, können Sie einfach wie gewohnt arbeiten aber auch weitere Funktionen nutzen. Zudem ist ein Strukturvorschlag gegeben, dieser muss aber nicht unbedingt eingehalten werden. Wichtig ist, dass die Dokumentation klar und verständlich ist und die relevanten Files auch als Link eingebunden werden.
-:::
+## Team und Ziel
 
-## Zusammenfassung der Aufgabenstellung und Ziele
+**Unterhuber, Brachmann, Reimeir und Noessing** entwickeln eine IIoT-Lösung zur Überwachung von Temperatur, Luftfeuchtigkeit und zwei Hygrometern. Ein ESP32-C3 erfasst die Werte, sendet sie über MQTT und bietet lokal eine REST-API. Eine containerisierte Anwendung speichert alle Gruppen automatisch in SQLite und stellt sie in einem Dashboard dar.
 
+Der Gruppen-Slug ist `unterhuber-brachmann-reimeir-noessing`.
 
-## Anleitung für User
+## Architektur
 
-### Konfiguration und Start des Mikrocontrollers
+1. Der ESP32-C3 liest DHT20 und zwei analoge Hygrometer.
+2. NTP stellt UTC-Zeitstempel bereit.
+3. Messwerte und Gerätestatus werden über MQTT veröffentlicht.
+4. Der ESP32 stellt parallel die lokale HTTP-API bereit.
+5. Der Cloud-Container abonniert Wildcard-Topics, persistiert Daten in SQLite und stellt Dashboard und JSON-API auf Port 8080 bereit.
 
-### Empfehlungen für die IT-Abteilung
+## Hardware und Verkabelung
 
+| Komponente | ESP32-C3-Pin | Funktion |
+|---|---:|---|
+| DHT20 SDA | GPIO 8 | I²C-Daten |
+| DHT20 SCL | GPIO 9 | I²C-Takt |
+| Hygrometer 1 | GPIO 0 | Analogsignal |
+| Hygrometer 2 | GPIO 1 | Analogsignal |
+| Sensorversorgung | 3,3 V | Versorgung |
+| Sensormasse | GND | gemeinsame Masse |
 
-## Anleitung für Developer
+Analoge Signale dürfen 3,3 V nicht überschreiten. Die Kalibrierwerte stehen in `src/esp32_firmware/src/main.cpp`.
 
-- Das repository ist als `pdm`-Projekt strukturiert. Nutzen Sie `pdm install`, um die Abhängigkeiten zu installieren.
-- Für Dokumentation wurde [Quarto](https://quarto.org/) verwendet, die `quarto-cli`-Befehle sind ebenfalls in der `pdm`-Umgebung verfügbar.
-    - Führen Sie `quarto preview` im `docs`-Verzeichnis aus, um die Dokumentation lokal zu starten.
-    - Zudem existiert eine github-action zur automatischen Erstellung der Dokumentation, die diese auch automatisch als Website bereitstellt, wenn Sie in den Main-Branch pushen. Wenn sie diese entfernen wollen, müssen sie die Datei `.github/workflows/publish.yml` anpassen.
+## Mikrocontroller einrichten
 
-### Struktur des Projekts
+Voraussetzungen sind VS Code, PlatformIO und ein per USB angeschlossener ESP32-C3.
 
-- `docs/`: Quarto Dokumentation
-- `docs/iot-specs`: Spezifikationen für IoT-Geräte
-- `docs/images`: Bilder für die Dokumentation
-- `src/esp32_firmware`: Quellcode mit Ansätzen für die Firmware-Entwicklung
-- `src/raspi_firmware`: Quellcode mit Ansätzen für die Firmware-Entwicklung
-- `src/cloud`: Ihre containerisierte Lösung aus Termin 3 (von Ihnen anzulegen)
-- `tests/`: Ihre Testfälle für die HTTP-API aus Termin 2 (von Ihnen anzulegen)
+```bash
+cd src/esp32_firmware
+cp .env.example .env
+# WLAN und Kurs-Broker-Passwort in .env eintragen
+pio run
+pio run -t upload
+pio device monitor --baud 115200
+```
+
+Die `.env` ist ignoriert und darf nicht committed werden. Die serielle Ausgabe zeigt WLAN-IP, I²C-Erkennung, MQTT-Verbindung und Publish-Ergebnisse. Vor einem Messversand wartet die Firmware auf eine gültige NTP-Uhr.
+
+### WLAN- und Brokerprofile
+
+In `.env` lassen sich WLAN und Broker unabhängig auswählen:
+
+```text
+WIFI_PROFILE="zentrum"  # oder "kurs"
+MQTT_PROFILE="emqx"     # oder "kurs"
+```
+
+Das Zentrum-Profil liest `WIFI_SSID` und `WIFI_PASSWORD`, das Kursprofil
+`KURS_SSID` und `KURS_PASSWORD`. Das EMQX-Profil liest `MQTT_HOST`,
+`MQTT_USER`, `MQTT_PASSWORD` und `MQTT_USE_TLS`. Für das Kurs-Brokerprofil
+werden `158.180.44.197:1883`, Benutzer `bobm` und unverschlüsseltes MQTT
+automatisch gesetzt; einzutragen ist nur `MQTT_KURS_BROKER_PASS`.
+
+## MQTT
+
+Kurs-Broker: `158.180.44.197:1883`, Benutzer `bobm`, unverschlüsselt. Topics:
+
+```text
+iiot/group/unterhuber-brachmann-reimeir-noessing/sensor/temperature/state
+iiot/group/unterhuber-brachmann-reimeir-noessing/sensor/humidity/state
+iiot/group/unterhuber-brachmann-reimeir-noessing/sensor/hygrometer-1/state
+iiot/group/unterhuber-brachmann-reimeir-noessing/sensor/hygrometer-2/state
+iiot/group/unterhuber-brachmann-reimeir-noessing/status
+```
+
+```json
+{"timestamp":"2026-11-02T10:00:00Z","sensor_id":"yourmuesli-innsbruck-01","value":22.5,"unit":"°C","status":"ok"}
+```
+
+Das Status-Topic wird retained gesendet. Beim Verbindungsaufbau wird `{"status":"offline"}` als Last Will hinterlegt; normale Zustände sind `ok` und `error`.
+
+## REST-API des ESP32
+
+Basis-URL: `http://<ESP32-IP>`. Die vollständige Spezifikation steht in `docs/iot-specs/openapi.yaml`.
+
+| Methode | Pfad | Zweck |
+|---|---|---|
+| GET | `/` | Erreichbarkeit |
+| GET | `/config` | Gerätekonfiguration lesen |
+| POST | `/config` | Sendeintervall ändern |
+| GET | `/status` | Verbindungen, Uptime, letzte Werte und Versandstatus |
+
+```bash
+curl http://<ESP32-IP>/config
+curl -X POST http://<ESP32-IP>/config -H 'Content-Type: application/json' -d '{"reading_interval_seconds":10}'
+curl http://<ESP32-IP>/status
+```
+
+Intervalle von 2 bis 86400 Sekunden sind zulässig. Die Änderung wirkt sofort, bleibt aber nach einem Neustart nicht erhalten. Ungültiges JSON liefert 400, unbekannte Pfade 404 und falsche Methoden 405.
+
+## Tests
+
+```bash
+python -m pip install -r tests/requirements.txt
+pytest tests/test_cloud.py -v
+DEVICE_BASE_URL=http://<ESP32-IP> pytest tests/test_device_api.py -v
+```
+
+Ohne `DEVICE_BASE_URL` werden Hardwaretests übersprungen. Vor der Abgabe müssen sie am geflashten Gerät ausgeführt werden.
+
+## Cloud-Lösung
+
+Im Repository-Stamm:
+
+```bash
+cp .env.example .env
+# Kurs-Broker-Passwort eintragen
+docker compose up --build
+```
+
+- Dashboard: `http://localhost:8080/`
+- Healthcheck: `http://localhost:8080/health`
+- Statistik: `http://localhost:8080/api/sensors`
+- Messwerte: `http://localhost:8080/api/readings?group=unterhuber-brachmann-reimeir-noessing&sensor=temperature`
+
+Die Anwendung abonniert `iiot/group/+/sensor/+/state` und `iiot/group/+/status`. Neue Gruppen und Sensortypen erscheinen automatisch. SQLite liegt im Volume `iiot-data`. Das Dashboard zeigt Status, Anzahl, Minimum, Mittelwert, Maximum und Temperaturverlauf.
+
+```bash
+docker compose down
+```
+
+`docker compose down -v` löscht auch die Datenbank und darf nur bewusst verwendet werden.
+
+## Empfehlungen für die IT-Abteilung
+
+| Richtung/Ziel | Protokoll/Port | Zweck |
+|---|---|---|
+| ausgehend zu `158.180.44.197` | TCP 1883 | MQTT |
+| ausgehend zu NTP-Servern | UDP 123 | UTC-Zeit |
+| lokal zum ESP32 | TCP 80 | REST-API |
+
+Laptop und ESP32 müssen für Konfiguration und Tests im selben Netz liegen; Client-Isolation in Gäste-WLANs verhindert dies. Port 80 darf wegen unverschlüsseltem HTTP nicht ins Internet freigegeben werden. Fernwartung sollte über ein authentifiziertes VPN erfolgen. MQTT 1883 ist ebenfalls unverschlüsselt; produktiv wären TLS, Zertifikatsprüfung, getrennte Gerätezugänge und minimale Broker-ACLs erforderlich.
+
+## Fehlerbehebung
+
+- **DHT20 fehlt:** Versorgung, GND, SDA GPIO 8, SCL GPIO 9 und Pull-ups prüfen.
+- **Keine MQTT-Daten:** `.env`, Firewall, Broker und serielles Log prüfen.
+- **Falsche Zeit:** UDP 123 und DNS freigeben.
+- **REST nicht erreichbar:** IP, gleiches WLAN und Client-Isolation prüfen.
+- **Dashboard leer:** `docker compose logs dashboard`, Passwort und Topics prüfen.
+- **Hygrometer unplausibel:** ADC-Spannung und Trocken-/Nasskalibrierung prüfen.
+
+## Relevante Dateien
+
+- `src/esp32_firmware/src/main.cpp`
+- `src/esp32_firmware/.env.example`
+- `docs/iot-specs/openapi.yaml`
+- `docs/iot-specs/asyncapi.yaml`
+- `src/cloud/app.py`
+- `docker-compose.yml`
+- `tests/`
