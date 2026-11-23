@@ -42,9 +42,10 @@ MQTT_PROFILE="emqx"     # alternativ: "kurs"
 
 `zentrum` verwendet `WIFI_SSID` und `WIFI_PASSWORD`; `kurs` verwendet
 `KURS_SSID` und `KURS_PASSWORD`. Beim Broker verwendet `emqx` die Werte
-`MQTT_HOST`, `MQTT_USER`, `MQTT_PASSWORD` und `MQTT_USE_TLS`. Das Kursprofil
-setzt automatisch Host `158.180.44.197`, Port `1883`, Benutzer `bobm` und
-TLS aus; dafür muss nur `MQTT_KURS_BROKER_PASS` eingetragen werden.
+`MQTT_HOST`, `MQTT_PORT`, `MQTT_USER`, `MQTT_PASSWORD` und `MQTT_USE_TLS`.
+Das Kursprofil liest entsprechend `MQTT_KURS_BROKER_HOST`,
+`MQTT_KURS_BROKER_PORT`, `MQTT_KURS_BROKER_USER`,
+`MQTT_KURS_BROKER_PASS` und `MQTT_KURS_BROKER_TLS`.
 
 Beim Start zeigt die serielle Konsole die ausgewählten Profilnamen, aber keine
 Passwörter. Ein einmaliger Build mit abweichender Auswahl ist ebenfalls möglich:
@@ -72,6 +73,7 @@ werden:
 
 ```text
 MQTT_HOST="e2f0071d.ala.eu-central-1.emqxsl.com"
+MQTT_PORT="8883"
 MQTT_USER="IIoT"
 MQTT_PASSWORD="<EMQX-Passwort>"
 MQTT_USE_TLS="true"

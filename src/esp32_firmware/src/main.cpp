@@ -30,7 +30,7 @@ constexpr char MQTT_HOST_VALUE[] = MQTT_BROKER_HOST;
 constexpr bool MQTT_USE_TLS_VALUE =
     (MQTT_USE_TLS[0] == '1' || MQTT_USE_TLS[0] == 'y' || MQTT_USE_TLS[0] == 'Y' ||
      MQTT_USE_TLS[0] == 't' || MQTT_USE_TLS[0] == 'T');
-constexpr uint16_t MQTT_PORT = MQTT_USE_TLS_VALUE ? 8883 : 1883;
+const uint16_t MQTT_PORT = static_cast<uint16_t>(atoi(MQTT_BROKER_PORT));
 constexpr char MQTT_USER_VALUE[] = MQTT_USER;
 constexpr char MQTT_PASSWORD_VALUE[] = MQTT_PASSWORD;
 constexpr char MQTT_PROFILE_VALUE[] = MQTT_PROFILE_NAME;
@@ -357,7 +357,8 @@ void connectMqtt() {
   }
 
   const String clientId = "esp32c3-" + String(static_cast<uint32_t>(ESP.getEfuseMac()), HEX);
-  Serial.printf("[MQTT] Connecting to %s as %s\n", MQTT_HOST_VALUE, clientId.c_str());
+  Serial.printf("[MQTT] Connecting to %s:%u as %s\n",
+                MQTT_HOST_VALUE, MQTT_PORT, clientId.c_str());
   if (mqttClient.connect(clientId.c_str(), MQTT_USER_VALUE, MQTT_PASSWORD_VALUE,
                          statusTopic.c_str(), 1, true, "{\"status\":\"offline\"}")) {
     Serial.println("[MQTT] Connected");
@@ -421,7 +422,7 @@ void setup() {
     Serial.println("[MQTT] TLS enabled");
   } else {
     mqttClient.setClient(wifiClient);
-    Serial.println("[MQTT] TLS disabled (course-broker fallback)");
+    Serial.println("[MQTT] TLS disabled");
   }
   mqttClient.setServer(MQTT_HOST_VALUE, MQTT_PORT);
   setupRestApi();

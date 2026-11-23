@@ -39,6 +39,13 @@ else:
 if mqtt_profile == "emqx":
     selected_mqtt = {
         "MQTT_BROKER_HOST": values.get("MQTT_HOST"),
+        "MQTT_BROKER_PORT": values.get(
+            "MQTT_PORT",
+            "8883"
+            if values.get("MQTT_USE_TLS", "true").lower()
+            in {"1", "true", "yes", "on"}
+            else "1883",
+        ),
         "MQTT_USER": values.get("MQTT_USER"),
         "MQTT_PASSWORD": values.get("MQTT_PASSWORD"),
         "MQTT_USE_TLS": values.get("MQTT_USE_TLS", "true"),
@@ -46,10 +53,11 @@ if mqtt_profile == "emqx":
     }
 elif mqtt_profile == "kurs":
     selected_mqtt = {
-        "MQTT_BROKER_HOST": "158.180.44.197",
-        "MQTT_USER": "bobm",
+        "MQTT_BROKER_HOST": values.get("MQTT_KURS_BROKER_HOST"),
+        "MQTT_BROKER_PORT": values.get("MQTT_KURS_BROKER_PORT", "1883"),
+        "MQTT_USER": values.get("MQTT_KURS_BROKER_USER"),
         "MQTT_PASSWORD": values.get("MQTT_KURS_BROKER_PASS"),
-        "MQTT_USE_TLS": "false",
+        "MQTT_USE_TLS": values.get("MQTT_KURS_BROKER_TLS", "false"),
         "MQTT_PROFILE_NAME": "kurs",
     }
 else:
@@ -62,6 +70,13 @@ if missing:
         f'Für WIFI_PROFILE="{wifi_profile}" / MQTT_PROFILE="{mqtt_profile}" fehlen: '
         + ", ".join(missing)
     )
+
+try:
+    mqtt_port = int(selected["MQTT_BROKER_PORT"])
+except ValueError as error:
+    raise SystemExit("MQTT-Broker-Port muss eine ganze Zahl sein.") from error
+if not 1 <= mqtt_port <= 65535:
+    raise SystemExit("MQTT-Broker-Port muss zwischen 1 und 65535 liegen.")
 
 # Do not pass secrets as -D flags: shell metacharacters in passwords (for
 # example '$' or '&') would corrupt the compiler command. Generate a header in
