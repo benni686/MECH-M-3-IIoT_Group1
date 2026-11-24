@@ -1,15 +1,24 @@
 services:
+  # Validiert die TOML-Konfiguration und stellt Grafana sein Passwort als Datei bereit.
+  config-init:
+    build: ./src/cloud
+    user: "0:0"
+    command: ["python", "config_init.py"]
+    restart: "no"
+    volumes:
+      - ./settings.toml:/config/settings.toml:ro
+      - ./settings.local.toml:/config/settings.local.toml:ro
+      - runtime-secrets:/run-config
+
   # Schreibt alle Nachrichten von iiot/group/# rund um die Uhr in SQLite.
   collector:
     build: ./src/cloud
     restart: unless-stopped
     command: ["python", "collector.py"]
-    env_file:
-      - .env
-    environment:
-      DATABASE_PATH: /data/iiot.sqlite3
     volumes:
       - iiot-data:/data
+      - ./settings.toml:/config/settings.toml:ro
+      - ./settings.local.toml:/config/settings.local.toml:ro
     healthcheck:
       test: ["CMD", "python", "collector.py", "--health"]
       interval: 30s
@@ -21,15 +30,14 @@ services:
   dashboard:
     build: ./src/cloud
     restart: unless-stopped
-    env_file:
-      - .env
     environment:
-      DATABASE_PATH: /data/iiot.sqlite3
       DISABLE_MQTT: "1"
     ports:
       - "8080:8080"
     volumes:
       - iiot-data:/data
+      - ./settings.toml:/config/settings.toml:ro
+      - ./settings.local.toml:/config/settings.local.toml:ro
     depends_on:
       - collector
     healthcheck:
@@ -38,14 +46,28 @@ services:
       timeout: 5s
       retries: 3
 
+  # Gleicht bei einem vorhandenen Grafana-Volume das Adminpasswort mit TOML ab.
+  grafana-password-sync:
+    image: grafana/grafana:12.4.3
+    user: "472:0"
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - 'if [ -f /var/lib/grafana/grafana.db ]; then grafana cli --homepath /usr/share/grafana --config /etc/grafana/grafana.ini admin reset-admin-password "$$(cat /run-config/grafana_admin_password)"; fi'
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - runtime-secrets:/run-config:ro
+    depends_on:
+      config-init:
+        condition: service_completed_successfully
+
   # Grafana-Dashboard auf derselben Datenbank (nur lesend eingebunden).
   grafana:
     image: grafana/grafana:12.4.3
     restart: unless-stopped
     environment:
       GF_PLUGINS_PREINSTALL_SYNC: frser-sqlite-datasource@4.0.6
-      GF_SECURITY_ADMIN_USER: admin
-      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      GF_SECURITY_ADMIN_USER__FILE: /run-config/grafana_admin_user
+      GF_SECURITY_ADMIN_PASSWORD__FILE: /run-config/grafana_admin_password
       GF_AUTH_ANONYMOUS_ENABLED: "true"
       GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
       GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /etc/grafana/dashboards/iiot.json
@@ -57,9 +79,14 @@ services:
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
       - ./grafana/dashboards:/etc/grafana/dashboards:ro
       - grafana-data:/var/lib/grafana
+      - runtime-secrets:/run-config:ro
     depends_on:
-      - collector
+      collector:
+        condition: service_started
+      grafana-password-sync:
+        condition: service_completed_successfully
 
 volumes:
   iiot-data:
   grafana-data:
+  runtime-secrets:

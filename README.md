@@ -23,13 +23,19 @@ Die produktive Firmware liegt in `src/esp32_firmware/`. Sie verwendet:
 - DHT20 an SDA `GPIO 8` und SCL `GPIO 9`
 - Hygrometer 1 an `GPIO 0`/`A0`
 - Hygrometer 2 an `GPIO 1`
-- ein über die lokale `.env` konfiguriertes WLAN
+- ein über TOML-Profile konfiguriertes WLAN
 - den Kurs-MQTT-Broker gemäß `docs/iot-specs/conventions.md`
 
-Vor dem Flashen muss `.env.example` nach `.env` kopiert und mit den lokalen
-WLAN-/MQTT-Zugangsdaten befüllt werden. Der Gruppen-Slug ist
-`unterhuber-brachmann-reimeir-noessing`.
-Die `.env` bleibt durch `.gitignore` lokal. Der Build wird aus dem
+`settings.toml` enthält ausschließlich versionierbare Projekt- und Kurswerte.
+Geheimnisse und der optionale private Broker stehen in der ignorierten
+`settings.local.toml`. Einmalig einrichten:
+
+```bash
+cp settings.local.example.toml settings.local.toml
+# settings.local.toml ausfüllen
+```
+
+ESP32 und Cloud-Stack lesen dieselben Dateien. Der Build wird aus dem
 Firmware-Ordner gestartet:
 
 ```bash
@@ -43,23 +49,26 @@ Die Firmware bietet außerdem `GET /config`, `POST /config` und `GET /status`
 
 ## Cloud: Collector, Streamlit und Grafana
 
-Im Repository-Stamm `.env.example` nach `.env` kopieren, das Kurs-Passwort
-(`MQTT_PASSWORD`) eintragen und starten:
+Im Repository-Stamm starten:
 
 ```bash
 docker compose up --build
 ```
 
-Es laufen drei Dienste auf einer gemeinsamen SQLite-Datenbank (Volume `iiot-data`):
+Es laufen drei dauerhafte Dienste und zwei kurze Initialisierungsdienste auf einer
+gemeinsamen SQLite-Datenbank (Volume `iiot-data`):
 
 | Dienst | Aufgabe | Adresse |
 |---|---|---|
+| `config-init` | validiert TOML und stellt Grafana sein Passwort dateibasiert bereit | - |
+| `grafana-password-sync` | gleicht das Adminpasswort auch bei bestehenden Grafana-Volumes ab | - |
 | `collector` | abonniert `iiot/group/#` und speichert alle Messwerte, auch wenn kein Dashboard offen ist | - |
 | `dashboard` | Streamlit-Dashboard | http://localhost:8080 |
-| `grafana` | Grafana-Dashboard "IIoT Sensor-Dashboard" (ohne Login lesbar, Admin: `admin` / `GRAFANA_ADMIN_PASSWORD`) | http://localhost:3000 |
+| `grafana` | Grafana-Dashboard "IIoT Sensor-Dashboard" (anonym lesbar; Admin-Daten aus TOML) | http://localhost:3000 |
 
 Beide Dashboards bieten Auswahl von Gruppe, Sensoren und Zeitraum, aktuelle Werte,
-Zeitverläufe je Einheit, Gerätestatus und die Rohdaten. Grafana nutzt das Plugin
+Zeitverläufe je Einheit, Gerätestatus, letzte Verbindung und Rohdaten. Streamlit
+zeigt zusätzlich Sensoranzahl sowie Minimum, Mittelwert und Maximum. Grafana nutzt das Plugin
 `frser-sqlite-datasource`, das beim ersten Start automatisch installiert wird
 (Internet nötig). Datenquelle und Dashboard liegen unter `grafana/` und werden
 beim Start eingespielt; Änderungen in der Oberfläche gehen bei einem Neustart nicht
@@ -74,8 +83,24 @@ Nützliche Befehle:
 
 ```bash
 docker compose logs -f collector   # Verbindung und Anzahl gespeicherter Werte
-docker compose ps                  # collector sollte "healthy" sein
-docker compose down -v             # alles inkl. Daten löschen
+docker compose ps                  # collector und dashboard sollten "healthy" sein
+docker compose down                # Container stoppen, Daten behalten
+```
+
+`docker compose down -v` löscht auch die Messdaten und darf nur bewusst verwendet werden.
+
+## Konfigurations- und Secret-Konzept
+
+- `settings.toml` wird committed: Gruppen-Slug, Gerätewerte und Kurs-Broker ohne Passwort.
+- `settings.local.example.toml` wird committed: dokumentierte Vorlage ohne echte Zugangsdaten.
+- `settings.local.toml` wird ignoriert: WLAN-Passwörter, Kurs-Passwort, privater Broker und Grafana-Passwort.
+- Zur Umschaltung auf den privaten Broker in `settings.local.toml` unter `[broker]`
+  `active = "private"` setzen. Die Zugangsdaten bleiben lokal.
+
+Alte lokale `.env`-Dateien können einmalig migriert werden:
+
+```bash
+python scripts/migrate_env_to_toml.py
 ```
 
 ## Dokumentation lokal bauen

@@ -8,6 +8,7 @@ _site/
 # PlatformIO / Zugangsdaten
 .pio/
 .env
+settings.local.toml
 *.sqlite3
 .pytest_cache/
 

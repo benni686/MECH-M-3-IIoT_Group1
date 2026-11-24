@@ -12,7 +12,8 @@ Der Gruppen-Slug ist `unterhuber-brachmann-reimeir-noessing`.
 2. NTP stellt UTC-Zeitstempel bereit.
 3. Messwerte und Gerätestatus werden über MQTT veröffentlicht.
 4. Der ESP32 stellt parallel die lokale HTTP-API bereit.
-5. Der Cloud-Container abonniert Wildcard-Topics, persistiert Daten in SQLite und stellt Dashboard und JSON-API auf Port 8080 bereit.
+5. Ein dauerhafter Collector abonniert `iiot/group/#` und persistiert alle Gruppen und Sensortypen in SQLite.
+6. Streamlit und Grafana visualisieren Zeitreihen, Sensorübersicht, letzte Verbindung, Status und Kennzahlen.
 
 ## Hardware und Verkabelung
 
@@ -32,30 +33,35 @@ Analoge Signale dürfen 3,3 V nicht überschreiten. Die Kalibrierwerte stehen in
 Voraussetzungen sind VS Code, PlatformIO und ein per USB angeschlossener ESP32-C3.
 
 ```bash
+cp settings.local.example.toml settings.local.toml
+# WLAN-, Kurs-Passwort- und optionale Privatbroker-Daten eintragen
 cd src/esp32_firmware
-cp .env.example .env
-# WLAN und Kurs-Broker-Passwort in .env eintragen
 pio run
 pio run -t upload
 pio device monitor --baud 115200
 ```
 
-Die `.env` ist ignoriert und darf nicht committed werden. Die serielle Ausgabe zeigt WLAN-IP, I²C-Erkennung, MQTT-Verbindung und Publish-Ergebnisse. Vor einem Messversand wartet die Firmware auf eine gültige NTP-Uhr.
+Die versionierte `settings.toml` enthält keine Geheimnisse. `settings.local.toml`
+ist ignoriert und enthält die lokalen Zugangsdaten. Die serielle Ausgabe zeigt
+WLAN-IP, I²C-Erkennung, MQTT-Verbindung und Publish-Ergebnisse, aber keine
+Passwörter. Vor einem Messversand wartet die Firmware auf eine gültige NTP-Uhr.
 
 ### WLAN- und Brokerprofile
 
-In `.env` lassen sich WLAN und Broker unabhängig auswählen:
+In `settings.local.toml` lassen sich WLAN und Broker unabhängig auswählen:
 
-```text
-WIFI_PROFILE="zentrum"  # oder "kurs"
-MQTT_PROFILE="emqx"     # oder "kurs"
+```toml
+[wifi]
+active = "zentrum"  # alternativ "course"
+
+[broker]
+active = "course"   # alternativ "private"
 ```
 
-Das Zentrum-Profil liest `WIFI_SSID` und `WIFI_PASSWORD`, das Kursprofil
-`KURS_SSID` und `KURS_PASSWORD`. Das EMQX-Profil liest `MQTT_HOST`,
-`MQTT_USER`, `MQTT_PASSWORD` und `MQTT_USE_TLS`. Für das Kurs-Brokerprofil
-werden `158.180.44.197:1883`, Benutzer `bobm` und unverschlüsseltes MQTT
-automatisch gesetzt; einzutragen ist nur `MQTT_KURS_BROKER_PASS`.
+Die öffentlichen Kurswerte stehen in `settings.toml`. WLAN-Passwörter, das
+Kurs-Broker-Passwort und die vollständige Sektion `[broker.private]` bleiben in
+`settings.local.toml` und werden nicht zu Git hinzugefügt. Cloud und Firmware
+verwenden dadurch garantiert dasselbe aktive Brokerprofil.
 
 ## MQTT
 
@@ -109,17 +115,20 @@ Ohne `DEVICE_BASE_URL` werden Hardwaretests übersprungen. Vor der Abgabe müsse
 Im Repository-Stamm:
 
 ```bash
-cp .env.example .env
-# Kurs-Broker-Passwort eintragen
+cp settings.local.example.toml settings.local.toml
+# lokale Zugangsdaten eintragen
 docker compose up --build
 ```
 
-- Dashboard: `http://localhost:8080/`
-- Healthcheck: `http://localhost:8080/health`
-- Statistik: `http://localhost:8080/api/sensors`
-- Messwerte: `http://localhost:8080/api/readings?group=unterhuber-brachmann-reimeir-noessing&sensor=temperature`
+- Streamlit: `http://localhost:8080/`
+- Streamlit-Healthcheck: `http://localhost:8080/_stcore/health`
+- Grafana: `http://localhost:3000/`
 
-Die Anwendung abonniert `iiot/group/+/sensor/+/state` und `iiot/group/+/status`. Neue Gruppen und Sensortypen erscheinen automatisch. SQLite liegt im Volume `iiot-data`. Das Dashboard zeigt Status, Anzahl, Minimum, Mittelwert, Maximum und Temperaturverlauf.
+Der Collector abonniert `iiot/group/#`. Neue Gruppen und Sensortypen erscheinen
+ohne Konfigurationsänderung. SQLite liegt persistent im Volume `iiot-data`.
+Die Dashboards zeigen Zeitreihen, erkannte Sensoren, letzte Verbindung,
+Gerätestatus und Rohdaten; Streamlit berechnet zusätzlich Anzahl, Minimum,
+Mittelwert und Maximum für den gewählten Zeitraum.
 
 ```bash
 docker compose down
@@ -140,7 +149,7 @@ Laptop und ESP32 müssen für Konfiguration und Tests im selben Netz liegen; Cli
 ## Fehlerbehebung
 
 - **DHT20 fehlt:** Versorgung, GND, SDA GPIO 8, SCL GPIO 9 und Pull-ups prüfen.
-- **Keine MQTT-Daten:** `.env`, Firewall, Broker und serielles Log prüfen.
+- **Keine MQTT-Daten:** `settings.local.toml`, Firewall, Broker und serielles Log prüfen.
 - **Falsche Zeit:** UDP 123 und DNS freigeben.
 - **REST nicht erreichbar:** IP, gleiches WLAN und Client-Isolation prüfen.
 - **Dashboard leer:** `docker compose logs dashboard`, Passwort und Topics prüfen.
@@ -149,9 +158,9 @@ Laptop und ESP32 müssen für Konfiguration und Tests im selben Netz liegen; Cli
 ## Relevante Dateien
 
 - `src/esp32_firmware/src/main.cpp`
-- `src/esp32_firmware/.env.example`
+- `settings.toml` und `settings.local.example.toml`
 - `docs/iot-specs/openapi.yaml`
 - `docs/iot-specs/asyncapi.yaml`
-- `src/cloud/app.py`
+- `src/cloud/mqtt_store.py` und `src/cloud/streamlit_app.py`
 - `docker-compose.yml`
 - `tests/`
