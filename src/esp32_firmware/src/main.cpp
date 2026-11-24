@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "env_config.h"
+#include "settings_config.h"
 #include <ArduinoJson.h>
 #include <WebServer.h>
 #include <WiFi.h>
@@ -18,14 +18,14 @@ constexpr uint8_t HYGROMETER_1_PIN = 0;
 constexpr uint8_t HYGROMETER_2_PIN = 1;
 constexpr uint8_t DHT20_I2C_ADDR = 0x38;
 
-// Credentials are injected from the ignored .env file by load_env.py.
+// Configuration is generated from settings.toml + ignored settings.local.toml.
 constexpr char WIFI_SSID_VALUE[] = WIFI_SSID;
 constexpr char WIFI_PASSWORD_VALUE[] = WIFI_PASSWORD;
 constexpr char WIFI_PROFILE_VALUE[] = WIFI_PROFILE_NAME;
 
-// Set the group slug to the participating members' lowercase surnames.
-constexpr char MQTT_GROUP[] = "unterhuber-brachmann-reimeir-noessing";
-constexpr char DEVICE_ID[] = "yourmuesli-innsbruck-01";
+constexpr char MQTT_GROUP[] = MQTT_GROUP_SLUG;
+constexpr char DEVICE_ID[] = DEVICE_IDENTIFIER;
+constexpr char LOCATION[] = DEVICE_LOCATION;
 constexpr char MQTT_HOST_VALUE[] = MQTT_BROKER_HOST;
 constexpr bool MQTT_USE_TLS_VALUE =
     (MQTT_USE_TLS[0] == '1' || MQTT_USE_TLS[0] == 'y' || MQTT_USE_TLS[0] == 'Y' ||
@@ -35,7 +35,8 @@ constexpr char MQTT_USER_VALUE[] = MQTT_USER;
 constexpr char MQTT_PASSWORD_VALUE[] = MQTT_PASSWORD;
 constexpr char MQTT_PROFILE_VALUE[] = MQTT_PROFILE_NAME;
 
-constexpr unsigned long DEFAULT_INTERVAL_MS = 60000;
+const unsigned long DEFAULT_INTERVAL_MS =
+    strtoul(READING_INTERVAL_SECONDS, nullptr, 10) * 1000UL;
 constexpr unsigned long WIFI_RETRY_MS = 10000;
 constexpr unsigned long MQTT_RETRY_MS = 5000;
 constexpr unsigned long DEBUG_STATUS_MS = 2000;
@@ -219,7 +220,7 @@ void handleGetConfig() {
   JsonDocument document;
   document["device_id"] = DEVICE_ID;
   document["reading_interval_seconds"] = readingIntervalMs / 1000;
-  document["location"] = "Produktionshalle 1, Innsbruck";
+  document["location"] = LOCATION;
   String response;
   serializeJson(document, response);
   server.send(200, "application/json", response);

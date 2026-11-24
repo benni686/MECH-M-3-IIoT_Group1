@@ -67,6 +67,32 @@ def dashboard() -> None:
             st.error(f"MQTT-Verbindungsfehler: {collector.last_error}")
         return
 
+    sensor_count = len(catalog[["group_name", "sensor_type"]].drop_duplicates())
+    group_count = catalog["group_name"].nunique()
+    last_measurement = pd.to_datetime(
+        catalog["last_measurement"], utc=True, errors="coerce"
+    ).max()
+    metric_a, metric_b, metric_c = st.columns(3)
+    metric_a.metric("Erkannte Sensoren", sensor_count)
+    metric_b.metric("Aktive Gruppen", group_count)
+    metric_c.metric(
+        "Letzte Verbindung",
+        last_measurement.tz_convert("Europe/Berlin").strftime("%d.%m.%Y %H:%M:%S")
+        if pd.notna(last_measurement) else "unbekannt",
+    )
+
+    with st.expander("Sensorübersicht", expanded=True):
+        overview = catalog.rename(columns={
+            "group_name": "Gruppe",
+            "sensor_type": "Sensor",
+            "unit": "Einheit",
+            "samples": "Messwerte",
+            "first_measurement": "Erste Messung",
+            "last_measurement": "Letzte Verbindung",
+            "device_status": "Status",
+        })
+        st.dataframe(overview, use_container_width=True, hide_index=True)
+
     groups = catalog["group_name"].drop_duplicates().tolist()
     default_group = "unterhuber-brachmann-reimeir-noessing"
     default_index = groups.index(default_group) if default_group in groups else 0
@@ -101,6 +127,21 @@ def dashboard() -> None:
             row["sensor_type"], f'{row["value"]:.2f} {row["unit"]}',
             help=f'Letzter Messwert: {row["measured_at"].tz_convert("Europe/Berlin").strftime("%d.%m.%Y %H:%M:%S %Z")}',
         )
+
+    statistics = (
+        data.groupby(["sensor_type", "unit"], as_index=False)
+        .agg(
+            Anzahl=("value", "count"),
+            Minimum=("value", "min"),
+            Mittelwert=("value", "mean"),
+            Maximum=("value", "max"),
+        )
+        .rename(columns={"sensor_type": "Sensor", "unit": "Einheit"})
+    )
+    for column in ["Minimum", "Mittelwert", "Maximum"]:
+        statistics[column] = statistics[column].round(2)
+    with st.expander("Kennzahlen im gewählten Zeitraum"):
+        st.dataframe(statistics, use_container_width=True, hide_index=True)
 
     units = data["unit"].fillna("").unique().tolist()
     if len(units) > 1:

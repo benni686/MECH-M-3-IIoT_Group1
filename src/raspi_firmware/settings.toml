@@ -10,7 +10,7 @@
 # Eindeutiger Name für diesen Sensor, wird in den MQTT-Nachrichten verwendet.
 # z.B. "prod-hall-3-vomp"
 device_id = "yourmuesli-innsbruck-01"
-names = "{nachname1-nachname2-nachname3}"
+names = "unterhuber-brachmann-reimeir-noessing"
 
 # Optionaler, menschenlesbarer Standort für das Web-Interface.
 location = "Produktionshalle 1, Innsbruck"
@@ -19,8 +19,8 @@ location = "Produktionshalle 1, Innsbruck"
 # --- WLAN-Einstellungen ---
 # SSID (Name) und Passwort des lokalen WLAN-Netzwerks.
 # WICHTIG: Diese müssen vor Ort eingetragen werden!
-wifi_ssid = "yourmuesli-produktion"
-wifi_password = "SehrGeheimesPasswort123"
+wifi_ssid = "WLAN_SSID_EINTRAGEN"
+wifi_password = "WLAN_PASSWORT_EINTRAGEN"
 
 
 # --- MQTT Broker Einstellungen ---
@@ -29,14 +29,14 @@ broker_address = "158.180.44.197"
 broker_port = 1883
 mqtt_username = "bobm"
 # Passwort wird in der Vorlesung bekanntgegeben.
-mqtt_password = "In Vorlesung erfragen"
+mqtt_password = "KURS_BROKER_PASSWORT_EINTRAGEN"
 
 # Topics sind wie "Kanäle", auf denen Nachrichten gesendet werden.
 # Struktur siehe docs/iot-specs/conventions.md
 # Das Haupt-Topic für die Sensordaten (Temperatur, Luftfeuchtigkeit).
-telemetry_topic = "iiot/group/{nachname1-nachname2-nachname3}/sensor/temperature/state"
+telemetry_topic = "iiot/group/unterhuber-brachmann-reimeir-noessing/sensor/temperature/state"
 # Das Topic für Statusmeldungen (z.B. "ok", "error", "offline").
-status_topic = "iiot/group/{nachname1-nachname2-nachname3}/status"
+status_topic = "iiot/group/unterhuber-brachmann-reimeir-noessing/status"
 
 
 # --- Sensor & Applikations-Einstellungen ---

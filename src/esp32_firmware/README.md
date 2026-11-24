@@ -5,8 +5,8 @@ Hardware aus diesem Projekt: einen DHT20 über I²C sowie zwei analoge
 Hygrometer-Sensoren.
 
 > Das MQTT-Passwort des Kurs-Brokers wird in der Vorlesung bekanntgegeben.
-> Vor dem Upload müssen WLAN und MQTT-Zugangsdaten in `.env` eingetragen
-> werden. Diese lokale Datei wird nicht committed.
+> Vor dem Upload müssen WLAN und MQTT-Zugangsdaten im Repository-Stamm in
+> `settings.local.toml` eingetragen werden. Diese Datei wird nicht committed.
 
 ## Hardware-Konfiguration
 
@@ -22,37 +22,37 @@ Hygrometer-Sensoren.
 ## WLAN und Upload
 
 1. PlatformIO und die Espressif32-Plattform in VS Code installieren.
-2. `.env.example` nach `.env` kopieren und die Zugangsdaten eintragen.
+2. Im Repository-Stamm `settings.local.example.toml` nach
+   `settings.local.toml` kopieren und die Zugangsdaten eintragen.
 3. Prüfen, dass der Gruppen-Slug `unterhuber-brachmann-reimeir-noessing` lautet.
 4. ESP32-C3 über USB anschließen.
 5. Mit `pio run -t upload` flashen.
 6. Die serielle Ausgabe mit `pio device monitor --baud 115200` öffnen.
 
-Die lokale `.env` ist in `.gitignore` ausgeschlossen und enthält das WLAN- sowie
-das MQTT-Passwort.
+Die lokale `settings.local.toml` ist in `.gitignore` ausgeschlossen und enthält
+WLAN-, Broker- und Grafana-Passwörter. `settings.toml` enthält nur die
+versionierbaren Projekt- und Kurswerte.
 
 ## Profilumschaltung
 
-WLAN und Broker werden unabhängig über zwei Werte in `.env` ausgewählt:
+WLAN und Broker werden unabhängig in `settings.local.toml` ausgewählt:
 
-```text
-WIFI_PROFILE="zentrum"  # alternativ: "kurs"
-MQTT_PROFILE="emqx"     # alternativ: "kurs"
+```toml
+[wifi]
+active = "zentrum"  # alternativ: "course"
+
+[broker]
+active = "course"   # alternativ: "private"
 ```
 
-`zentrum` verwendet `WIFI_SSID` und `WIFI_PASSWORD`; `kurs` verwendet
-`KURS_SSID` und `KURS_PASSWORD`. Beim Broker verwendet `emqx` die Werte
-`MQTT_HOST`, `MQTT_PORT`, `MQTT_USER`, `MQTT_PASSWORD` und `MQTT_USE_TLS`.
-Das Kursprofil liest entsprechend `MQTT_KURS_BROKER_HOST`,
-`MQTT_KURS_BROKER_PORT`, `MQTT_KURS_BROKER_USER`,
-`MQTT_KURS_BROKER_PASS` und `MQTT_KURS_BROKER_TLS`.
+Die Sektionen `[wifi.zentrum]` und `[wifi.course]` enthalten die jeweiligen
+lokalen WLAN-Daten. Der Kurs-Broker ist ohne Passwort in `settings.toml`
+dokumentiert; sein Passwort sowie der komplette private Broker stehen nur in
+`settings.local.toml`.
 
 Beim Start zeigt die serielle Konsole die ausgewählten Profilnamen, aber keine
-Passwörter. Ein einmaliger Build mit abweichender Auswahl ist ebenfalls möglich:
-
-```bash
-WIFI_PROFILE=kurs MQTT_PROFILE=kurs pio run
-```
+Passwörter. Das Pre-Build-Skript validiert die TOML-Dateien und erzeugt den
+internen Header ausschließlich im ignorierten `.pio`-Buildverzeichnis.
 
 ## MQTT
 
@@ -68,22 +68,25 @@ minütlich JSON-Nachrichten mit UTC-Zeitstempel auf:
 Die Messwerte verwenden die Felder `timestamp`, `sensor_id`, `value`, `unit`
 und `status`. Das Sendeintervall beträgt standardmäßig 60 Sekunden.
 
-Für den EMQX-Cloud-Broker können in der lokalen `.env` diese Werte verwendet
-werden:
+Für einen eigenen TLS-Broker wird in `settings.local.toml` beispielsweise
+folgende lokale Sektion verwendet:
 
-```text
-MQTT_HOST="e2f0071d.ala.eu-central-1.emqxsl.com"
-MQTT_PORT="8883"
-MQTT_USER="IIoT"
-MQTT_PASSWORD="<EMQX-Passwort>"
-MQTT_USE_TLS="true"
+```toml
+[broker]
+active = "private"
+
+[broker.private]
+host = "eigener-broker.example.com"
+port = 8883
+username = "BENUTZER"
+password = "PASSWORT"
+tls = true
 ```
 
-`MQTT_USE_TLS` ist standardmäßig `false`; dadurch bleiben der bisherige
-Kurs-Broker und die bisherigen Einstellungen für die Abgabe erhalten. Bei
-`true` nutzt die Firmware automatisch TLS auf Port 8883. Der TLS-Kanal wird
-verschlüsselt aufgebaut; die Host-Zertifikatsprüfung ist in dieser Variante
-deaktiviert, da das Broker-CA-Zertifikat nicht im Projekt hinterlegt ist.
+Beim privaten Profil mit `tls = true` wird der TLS-Kanal verschlüsselt aufgebaut.
+Die Host-Zertifikatsprüfung ist derzeit deaktiviert, da kein projektspezifisches
+CA-Zertifikat hinterlegt ist; für einen Produktivbetrieb muss dieses ergänzt
+werden.
 
 ## REST-API
 

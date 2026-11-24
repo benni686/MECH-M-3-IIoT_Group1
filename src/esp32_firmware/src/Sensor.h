@@ -91,7 +91,7 @@ public:
     void reconnectMqtt() {
         while (!mqttClient.connected()) {
             Serial.print("Attempting MQTT connection...");
-            // MQTT_USER und MQTT_PASSWORD kommen aus platformio.ini (.env)
+            // MQTT_USER und MQTT_PASSWORD kommen aus den generierten TOML-Einstellungen.
             if (mqttClient.connect(sensorId.c_str(), MQTT_USER, MQTT_PASSWORD)) {
                 Serial.println("connected!");
                 publishMetadata();

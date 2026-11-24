@@ -99,7 +99,10 @@ def test_streamlit_app_renders_with_data(store, tmp_path):
     assert not at.exception, at.exception
     assert at.selectbox[0].value == GROUP
     assert set(at.multiselect[0].value) == {"humidity", "temperature"}
-    assert len(at.metric) == 2
+    labels = {metric.label for metric in at.metric}
+    assert {"Erkannte Sensoren", "Aktive Gruppen", "Letzte Verbindung"} <= labels
+    assert {"temperature", "humidity"} <= labels
+    assert len(at.dataframe) >= 1
     # switch group and period
     at.selectbox[0].select("other-group").run()
     assert not at.exception, at.exception

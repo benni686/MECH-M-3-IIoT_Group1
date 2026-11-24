@@ -12,13 +12,22 @@ from uuid import uuid4
 
 import paho.mqtt.client as mqtt
 
+from config_loader import load_settings
+
 LOG = logging.getLogger("iiot-dashboard")
-DATABASE = Path(os.getenv("DATABASE_PATH", "/data/iiot.sqlite3"))
-MQTT_HOST = os.getenv("MQTT_HOST", "158.180.44.197")
-MQTT_PORT = int(os.getenv("MQTT_PORT", "1883"))
-MQTT_USER = os.getenv("MQTT_USER", "bobm")
-MQTT_PASSWORD = os.getenv("MQTT_PASSWORD", "")
-MQTT_TLS = os.getenv("MQTT_TLS", "false").lower() in {"1", "true", "yes"}
+SETTINGS = load_settings()
+BROKER = SETTINGS["broker"]["selected"]
+MQTT_PROFILE = SETTINGS["broker"]["selected_name"]
+MQTT_HOST = BROKER["host"]
+MQTT_PORT = BROKER["port"]
+MQTT_USER = BROKER["username"]
+MQTT_PASSWORD = BROKER["password"]
+MQTT_TLS = BROKER["tls"]
+MQTT_SUBSCRIPTION = SETTINGS["broker"].get("subscription", "iiot/group/#")
+DATABASE = Path(os.getenv(
+    "DATABASE_PATH",
+    "/data/iiot.sqlite3" if Path("/data").is_dir() else "data/iiot.sqlite3",
+))
 
 DB_LOCK = threading.Lock()
 
@@ -225,8 +234,11 @@ class MqttCollector:
         self.connected = reason_code == 0
         self.last_error = "" if self.connected else str(reason_code)
         if self.connected:
-            LOG.info("Connected to MQTT broker %s:%s", MQTT_HOST, MQTT_PORT)
-            client.subscribe("iiot/group/#", qos=1)
+            LOG.info(
+                "Connected to MQTT broker profile %s at %s:%s",
+                MQTT_PROFILE, MQTT_HOST, MQTT_PORT,
+            )
+            client.subscribe(MQTT_SUBSCRIPTION, qos=1)
         else:
             LOG.error("MQTT connection refused: %s", reason_code)
 

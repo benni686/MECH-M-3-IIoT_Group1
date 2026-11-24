@@ -8,7 +8,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-COPY mqtt_store.py streamlit_app.py collector.py ./
+COPY config_loader.py config_init.py mqtt_store.py streamlit_app.py collector.py ./
 
 RUN mkdir -p /data /home/appuser/.streamlit && \
     chown -R 65532:65532 /data /app /home/appuser

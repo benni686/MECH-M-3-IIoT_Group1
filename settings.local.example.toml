@@ -1,0 +1,29 @@
+# Lokale Ergänzungen zu settings.toml. Nach settings.local.toml kopieren.
+# Diese Datei ist nur eine Vorlage; settings.local.toml wird nicht committed.
+
+[wifi]
+active = "zentrum"
+
+[wifi.zentrum]
+ssid = "WLAN_SSID_EINTRAGEN"
+password = "WLAN_PASSWORT_EINTRAGEN"
+
+[wifi.course]
+ssid = "KURS_WLAN_SSID_EINTRAGEN"
+password = "KURS_WLAN_PASSWORT_EINTRAGEN"
+
+# Das Kurs-Passwort ist ebenfalls ein Geheimnis und bleibt deshalb lokal.
+[broker.course]
+password = "KURS_BROKER_PASSWORT_EINTRAGEN"
+
+# Optionaler eigener Broker. Zum Aktivieren unter [broker] active = "private"
+# setzen. Diese gesamte Sektion gehört ausschließlich in settings.local.toml.
+[broker.private]
+host = "eigener-broker.example.com"
+port = 8883
+username = "BENUTZER_EINTRAGEN"
+password = "PASSWORT_EINTRAGEN"
+tls = true
+
+[grafana]
+admin_password = "SICHERES_GRAFANA_PASSWORT_EINTRAGEN"
