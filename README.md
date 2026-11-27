@@ -4,6 +4,7 @@ Unterlagen, Aufgabenstellung und Vorlagen für die synchronen Termine 1–3 der 
 
 **Website:** https://jhumci.github.io/MECH-M-3-IIoT/
 
+**Video: https://youtu.be/IbF2dv24JjM**
 ## Struktur
 
 - `index.qmd`, `docs/`: Aufgabenstellung und Inhalte der Termine (Quarto)
