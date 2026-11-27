@@ -1,0 +1,32 @@
+# settings.toml
+#
+# Gemeinsame Konfiguration für ESP32-Firmware und Container. Diese Datei wird
+# committed und enthält KEINE Passwörter.
+
+[project]
+# Gruppenname aus den Nachnamen, ergibt iiot/group/<group_slug>/...
+group_slug = "unterhuber-brachmann-reimeir-noessing"
+
+[device]
+id = "yourmuesli-innsbruck-01"
+location = "Produktionshalle 1, Innsbruck"
+# Sendeintervall in Sekunden (2 bis 86400), per POST /config änderbar
+reading_interval_seconds = 60
+
+[wifi]
+# Aktives WLAN-Profil; SSID und Passwort stehen in settings.local.toml
+active = "zentrum"
+
+[broker]
+# Aktives Broker-Profil: "course" oder (nur lokal definiert) "private"
+active = "course"
+subscription = "iiot/group/#"
+
+[broker.course]
+host = "158.180.44.197"
+port = 1883
+username = "bobm"
+tls = false
+
+[grafana]
+admin_user = "admin"
